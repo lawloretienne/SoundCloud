@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="follower_count">
+        <item quantity="one">1 follower</item>
+        <item quantity="other">%d followers</item>
+    </plurals>
+
+    <plurals name="track_count">
+        <item quantity="one">1 track</item>
+        <item quantity="other">%d tracks</item>
+    </plurals>
+
+    <plurals name="playlist_count">
+        <item quantity="one">1 playlist</item>
+        <item quantity="other">%d playlists</item>
+    </plurals>
+
+</resources>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="48dp">
+
+    <com.sample.soundcloud.ui.CustomFontTextView
+        style="@style/TabIndicator"
+        android:id="@android:id/text1"
+        android:background="?android:selectableItemBackground"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="@string/likes"
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textAllCaps="false"
+        app:textFont="Roboto_Medium"
+        />
+
+    <View android:layout_height="4dp"
+        android:layout_width="wrap_content"
+        android:layout_alignRight="@android:id/text1"
+        android:background="@android:color/white"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>
+
+

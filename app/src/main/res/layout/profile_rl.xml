@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="@color/grey_200">
+
+    <ImageView
+        android:id="@+id/avatar_iv"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:contentDescription=""/>
+
+    <LinearLayout
+        android:layout_toRightOf="@id/avatar_iv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin">
+
+        <com.sample.soundcloud.ui.CustomFontTextView
+            android:id="@+id/username_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/grey_800"
+            tools:text="Armin Van Buuren"
+            android:drawablePadding="8dp"
+            android:textSize="14sp"
+            android:drawableLeft="@drawable/ic_username"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:textFont="Roboto_Regular"/>
+
+        <com.sample.soundcloud.ui.CustomFontTextView
+            android:id="@+id/location_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/grey_800"
+            android:layout_marginTop="4dp"
+            tools:text="Leiden, Netherlands"
+            android:drawablePadding="8dp"
+            android:textSize="14sp"
+            android:drawableLeft="@drawable/ic_location"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:textFont="Roboto_Regular"/>
+
+        <com.sample.soundcloud.ui.CustomFontTextView
+            android:id="@+id/followers_count_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/grey_800"
+            android:layout_marginTop="4dp"
+            tools:text="1,345,234 followers"
+            android:drawablePadding="8dp"
+            android:textSize="14sp"
+            android:drawableLeft="@drawable/ic_followers"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:textFont="Roboto_Regular"/>
+
+        <com.sample.soundcloud.ui.CustomFontTextView
+            android:id="@+id/track_count_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/grey_800"
+            android:layout_marginTop="4dp"
+            tools:text="34 tracks"
+            android:drawablePadding="8dp"
+            android:textSize="14sp"
+            android:drawableLeft="@drawable/ic_tracks"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:textFont="Roboto_Regular"/>
+
+        <com.sample.soundcloud.ui.CustomFontTextView
+            android:id="@+id/playlist_count_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/grey_800"
+            android:layout_marginTop="4dp"
+            tools:text="4 playlists"
+            android:drawablePadding="8dp"
+            android:textSize="14sp"
+            android:drawableLeft="@drawable/ic_playlists"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:textFont="Roboto_Regular"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

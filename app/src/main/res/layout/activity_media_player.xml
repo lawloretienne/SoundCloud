@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.avafab.examples.URLMediaPlayer.URLMediaPlayerActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/media_rl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/cover_image_iv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:contentDescription=""/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent_black_eighty"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin">
+
+            <com.sample.soundcloud.ui.CustomFontTextView
+                android:id="@+id/artist_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                app:textFont="Roboto_BoldItalic"/>
+
+            <com.sample.soundcloud.ui.CustomFontTextView
+                android:id="@+id/title_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                app:textFont="Roboto_Italic"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/controls_container_ll"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@color/transparent_black_eighty"
+            android:orientation="vertical"
+            android:layout_alignParentBottom="true">
+
+            <LinearLayout
+                android:id="@+id/controls"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:padding="8dp">
+
+                <ImageButton
+                    android:id="@+id/backward"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:onClick="seekBackward"
+                    android:contentDescription=""
+                    android:src="@drawable/ic_action_rewind"/>
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp">
+
+                    <ImageButton
+                        android:id="@+id/pause"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:onClick="pause"
+                        android:src="@drawable/ic_action_pause"
+                        android:contentDescription=""
+                        android:visibility="gone" />
+
+                    <ImageButton
+                        android:id="@+id/play"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:onClick="play"
+                        android:src="@drawable/ic_action_play"
+                        android:contentDescription=""/>
+
+                </FrameLayout>
+
+                <ImageButton
+                    android:id="@+id/forward"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:onClick="seekForward"
+                    android:src="@drawable/ic_action_fast_forward"
+                    android:contentDescription="" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <SeekBar
+            android:id="@+id/sb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:padding="0dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="64dp"/>
+
+        <com.sample.soundcloud.ui.CustomFontTextView
+            android:id="@+id/current_time_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:textColor="@android:color/white"
+            app:textFont="Roboto_Regular"
+            android:layout_above="@id/sb"
+            android:shadowDy="1"
+            android:shadowDx="1"
+            android:shadowRadius="1"
+            android:shadowColor="@color/transparent_black_ninty_five"/>
+
+        <com.sample.soundcloud.ui.CustomFontTextView
+            android:id="@+id/total_time_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="16dp"
+            android:textColor="@android:color/white"
+            app:textFont="Roboto_Regular"
+            android:layout_above="@id/sb"
+            android:layout_alignParentRight="true"
+            android:shadowDy="1"
+            android:shadowDx="1"
+            android:shadowRadius="1"
+            android:shadowColor="@color/transparent_black_ninty_five"/>
+
+    </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/pb"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
+
+</RelativeLayout>
+
