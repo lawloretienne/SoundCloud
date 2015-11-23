@@ -29,8 +29,8 @@ import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -40,25 +40,25 @@ import timber.log.Timber;
 public class MediaPlayerActivity extends Activity {
 
     // region Member Variables
-    @InjectView(R.id.pause)
+    @Bind(R.id.pause)
     ImageButton mPauseImageButton;
-    @InjectView(R.id.play)
+    @Bind(R.id.play)
     ImageButton mPlayImageButton;
-    @InjectView(R.id.artist_tv)
+    @Bind(R.id.artist_tv)
     TextView mArtistTextView;
-    @InjectView(R.id.title_tv)
+    @Bind(R.id.title_tv)
     TextView mTitleTextView;
-    @InjectView(R.id.cover_image_iv)
+    @Bind(R.id.cover_image_iv)
     ImageView mCoverImageImageView;
-    @InjectView(R.id.sb)
+    @Bind(R.id.sb)
     SeekBar mSeekBar;
-    @InjectView(R.id.total_time_tv)
+    @Bind(R.id.total_time_tv)
     TextView mTotalTimeTextView;
-    @InjectView(R.id.current_time_tv)
+    @Bind(R.id.current_time_tv)
     TextView mCurrentTimeTextView;
-    @InjectView(R.id.media_rl)
+    @Bind(R.id.media_rl)
     RelativeLayout mMediaRelativeLayout;
-    @InjectView(R.id.pb)
+    @Bind(R.id.pb)
     ProgressBar mProgressBar;
 
     private MediaPlayer mMediaPlayer;
@@ -228,7 +228,7 @@ public class MediaPlayerActivity extends Activity {
 
         // inflate layout
         setContentView(R.layout.activity_media_player);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         String streamUrl = "";
 

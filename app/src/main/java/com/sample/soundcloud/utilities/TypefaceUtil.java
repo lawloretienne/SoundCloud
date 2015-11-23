@@ -24,7 +24,7 @@ public class TypefaceUtil {
     public static Typeface getTypeface(TypefaceId id) {
         Typeface typeface = sTypefaceCache.get(id.getFilePath());
         if (typeface == null) {
-            typeface = Typeface.createFromAsset(SoundcloudApplication.get().getAssets(), id.getFilePath());
+            typeface = Typeface.createFromAsset(SoundcloudApplication.getInstance().getAssets(), id.getFilePath());
             sTypefaceCache.put(id.getFilePath(), typeface);
         }
         return typeface;

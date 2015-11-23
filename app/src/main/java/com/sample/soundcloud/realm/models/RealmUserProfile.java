@@ -7,7 +7,7 @@ import io.realm.RealmObject;
 /**
  * Created by etiennelawlor on 4/18/15.
  */
-public class UserProfile extends RealmObject {
+public class RealmUserProfile extends RealmObject {
 
     //region Member Variables
     private String username;

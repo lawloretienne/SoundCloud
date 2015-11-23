@@ -28,10 +28,13 @@ import com.sample.soundcloud.SoundcloudConstants;
 import com.sample.soundcloud.activities.MediaPlayerActivity;
 import com.sample.soundcloud.adapters.FavoritesAdapter;
 import com.sample.soundcloud.network.Api;
-import com.sample.soundcloud.network.models.Account;
+import com.sample.soundcloud.models.Account;
 import com.sample.soundcloud.network.models.Track;
 import com.sample.soundcloud.network.models.UserProfile;
 import com.sample.soundcloud.otto.BusProvider;
+import com.sample.soundcloud.realm.models.RealmAccount;
+import com.sample.soundcloud.realm.models.RealmTrack;
+import com.sample.soundcloud.realm.models.RealmUserProfile;
 import com.sample.soundcloud.ui.CircleTransformation;
 import com.sample.soundcloud.utilities.SoundcloudUtility;
 import com.squareup.leakcanary.RefWatcher;
@@ -42,10 +45,11 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
+import io.realm.RealmConfiguration;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 import io.realm.exceptions.RealmMigrationNeededException;
@@ -72,34 +76,43 @@ public class AccountFragment extends Fragment implements // region Interfaces
     // endregion
 
     // region Member Variables
-    @InjectView(R.id.avatar_iv)
+    @Bind(R.id.avatar_iv)
     ImageView mAvatarImageView;
-    @InjectView(R.id.username_tv)
+    @Bind(R.id.username_tv)
     TextView mUsernameTextView;
-    @InjectView(R.id.location_tv)
+    @Bind(R.id.location_tv)
     TextView mLocationTextView;
-    @InjectView(R.id.followers_count_tv)
+    @Bind(R.id.followers_count_tv)
     TextView mFollowersCountTextView;
-    @InjectView(R.id.track_count_tv)
+    @Bind(R.id.track_count_tv)
     TextView mTrackCountTextView;
-    @InjectView(R.id.playlist_count_tv)
+    @Bind(R.id.playlist_count_tv)
     TextView mPlaylistCountTextView;
-    @InjectView(R.id.favorites_rv)
+    @Bind(R.id.favorites_rv)
     RecyclerView mFavoritesRecyclerView;
-    @InjectView(android.R.id.empty)
+    @Bind(android.R.id.empty)
     View mEmptyView;
-    @InjectView(R.id.account_ll)
+    @Bind(R.id.account_ll)
     LinearLayout mAccountLinearLayout;
-    @InjectView(R.id.pb)
+    @Bind(R.id.pb)
     ProgressBar mProgressBar;
-    @InjectView(R.id.error_ll)
+    @Bind(R.id.error_ll)
     LinearLayout mErrorLinearLayout;
-    @InjectView(R.id.error_tv)
+    @Bind(R.id.error_tv)
     TextView mErrorTextView;
 
     private FavoritesAdapter mFavoritesAdapter;
     private Realm mRealm;
     // endregion
+
+    private static RealmConfiguration getRealmConfiguration(Context context) {
+//        return new RealmConfiguration.Builder(context)
+//                .name("loop.realm")
+//                .schemaVersion(1)
+//                .build();
+
+        return new RealmConfiguration.Builder(context).build();
+    }
 
     // region Listeners
 
@@ -110,7 +123,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
 
             mErrorLinearLayout.setVisibility(View.GONE);
 
-            com.sample.soundcloud.realm.models.Account cachedAccount = getCachedAccount();
+            RealmAccount cachedAccount = getCachedAccount();
 
             if (cachedAccount != null) {
                 if (cachedAccount.getUserProfile() != null) {
@@ -133,14 +146,16 @@ public class AccountFragment extends Fragment implements // region Interfaces
     // endregion
 
     // region Constructors
+    public AccountFragment() {
+    }
+    // endregion
+
+    // region Factory Methods
     public static AccountFragment newInstance() {
         AccountFragment fragment = new AccountFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
-    }
-
-    public AccountFragment() {
     }
     // endregion
 
@@ -150,7 +165,9 @@ public class AccountFragment extends Fragment implements // region Interfaces
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        BusProvider.get().register(this);
+        BusProvider.getInstance().register(this);
+
+        Context context = SoundcloudApplication.getInstance().getApplicationContext();
 
         try {
             mRealm = Realm.getInstance(getActivity());
@@ -158,6 +175,9 @@ public class AccountFragment extends Fragment implements // region Interfaces
         } catch (RealmMigrationNeededException e) {
             // in this case you need migration.
             // https://github.com/realm/realm-java/tree/master/examples/migrationExample
+
+            Realm.deleteRealm(getRealmConfiguration(context));
+            mRealm = Realm.getInstance(context);
         }
 
         // Create account, if needed
@@ -177,7 +197,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_account, container, false);
-        ButterKnife.inject(this, rootView);
+        ButterKnife.bind(this, rootView);
 
         return rootView;
     }
@@ -188,7 +208,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mFavoritesRecyclerView.setLayoutManager(layoutManager);
-        mFavoritesAdapter = new FavoritesAdapter(getActivity());
+        mFavoritesAdapter = new FavoritesAdapter();
         mFavoritesAdapter.setOnItemClickListener(this);
 
         mFavoritesRecyclerView.setAdapter(mFavoritesAdapter);
@@ -234,7 +254,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
     }
 
     @Override
@@ -253,7 +273,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
     // region FavoritesAdapter.OnItemClickListener Methods
     @Override
     public void onItemClick(int position) {
-        final com.sample.soundcloud.realm.models.Track track = mFavoritesAdapter.getItem(position);
+        final RealmTrack track = mFavoritesAdapter.getItem(position);
 
         String streamUrl = track.getStreamUrl();
         long duration = track.getDuration();
@@ -269,7 +289,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
 
     // region Otto Methods
 //    @Subscribe
-//    public void onNetworkConnected(NetworkConnected event) {
+//    public void onNetworkConnected(NetworkConnectedEvent event) {
 //        Timber.d("Soundcloud : onNetworkConnected()");
 //
 //        if(mErrorLinearLayout.getVisibility() == View.VISIBLE){
@@ -282,7 +302,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
 //    }
 //
 //    @Subscribe
-//    public void onNetworkDisconnected(NetworkConnected event) {
+//    public void onNetworkDisconnected(NetworkConnectedEvent event) {
 //        Timber.d("Soundcloud : onNetworkDisconnected()");
 //
 ////        if(mAccountLinearLayout.getVisibility() == View.VISIBLE){
@@ -298,7 +318,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
         if (isAccountCached()) {
 
             // Account is cached
-            com.sample.soundcloud.realm.models.Account cachedAccount = getCachedAccount();
+            RealmAccount cachedAccount = getCachedAccount();
 
             if (cachedAccount != null) {
                 if (cachedAccount.getUserProfile() != null) {
@@ -379,8 +399,8 @@ public class AccountFragment extends Fragment implements // region Interfaces
     }
 
     private boolean isAccountCached() {
-        RealmResults<com.sample.soundcloud.realm.models.Account> realmResults
-                = mRealm.where(com.sample.soundcloud.realm.models.Account.class).findAll();
+        RealmResults<RealmAccount> realmResults
+                = mRealm.where(RealmAccount.class).findAll();
 
         if (realmResults != null && realmResults.size() > 0) {
             return true;
@@ -389,9 +409,9 @@ public class AccountFragment extends Fragment implements // region Interfaces
         }
     }
 
-    private com.sample.soundcloud.realm.models.Account getCachedAccount() {
-        RealmResults<com.sample.soundcloud.realm.models.Account> realmResults
-                = mRealm.where(com.sample.soundcloud.realm.models.Account.class).findAll();
+    private RealmAccount getCachedAccount() {
+        RealmResults<RealmAccount> realmResults
+                = mRealm.where(RealmAccount.class).findAll();
 
         if (realmResults != null && realmResults.size() > 0) {
             return realmResults.get(0);
@@ -406,13 +426,13 @@ public class AccountFragment extends Fragment implements // region Interfaces
 
         mRealm.beginTransaction();
 
-        mRealm.clear(Account.class);
+        mRealm.clear(RealmAccount.class);
 
-        com.sample.soundcloud.realm.models.Account realmAccount =
-                mRealm.createObject(com.sample.soundcloud.realm.models.Account.class);
+        RealmAccount realmAccount =
+                mRealm.createObject(RealmAccount.class);
 
-        com.sample.soundcloud.realm.models.UserProfile realmUserProfile =
-                mRealm.createObject(com.sample.soundcloud.realm.models.UserProfile.class);
+        RealmUserProfile realmUserProfile =
+                mRealm.createObject(RealmUserProfile.class);
 
         realmUserProfile.setAvatarUrl(userProfile.getAvatarUrl());
         realmUserProfile.setCity(userProfile.getCity());
@@ -424,10 +444,10 @@ public class AccountFragment extends Fragment implements // region Interfaces
 
         realmAccount.setUserProfile(realmUserProfile);
 
-        RealmList<com.sample.soundcloud.realm.models.Track> realmTracks = new RealmList<>();
+        RealmList<RealmTrack> realmTracks = new RealmList<>();
         for (Track track : tracks) {
-            com.sample.soundcloud.realm.models.Track realmTrack
-                    = mRealm.createObject(com.sample.soundcloud.realm.models.Track.class);
+            RealmTrack realmTrack
+                    = mRealm.createObject(RealmTrack.class);
             realmTrack.setArtworkUrl(track.getArtworkUrl());
             realmTrack.setStreamUrl(track.getStreamUrl());
             realmTrack.setDuration(track.getDuration());
@@ -436,8 +456,8 @@ public class AccountFragment extends Fragment implements // region Interfaces
             realmTrack.setPlaybackCount(track.getPlaybackCount());
             realmTrack.setTitle(track.getTitle());
 
-            com.sample.soundcloud.realm.models.UserProfile realmUser
-                    = mRealm.createObject(com.sample.soundcloud.realm.models.UserProfile.class);
+            RealmUserProfile realmUser
+                    = mRealm.createObject(RealmUserProfile.class);
             realmUser.setUsername(track.getUser().getUsername());
             realmTrack.setUser(realmUser);
 
@@ -450,7 +470,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
         mRealm.commitTransaction();
     }
 
-    private void setUpUserProfile(com.sample.soundcloud.realm.models.UserProfile userProfile) {
+    private void setUpUserProfile(RealmUserProfile userProfile) {
         if (userProfile != null) {
             setUpAvatar(mAvatarImageView, userProfile);
             setUpUsername(mUsernameTextView, userProfile);
@@ -461,7 +481,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
         }
     }
 
-    private void setUpAvatar(ImageView iv, com.sample.soundcloud.realm.models.UserProfile userProfile) {
+    private void setUpAvatar(ImageView iv, RealmUserProfile userProfile) {
         String avatarUrl = userProfile.getAvatarUrl();
         if (!TextUtils.isEmpty(avatarUrl)) {
             avatarUrl = avatarUrl.replace("large.jpg", "t500x500.jpg");
@@ -485,7 +505,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
         }
     }
 
-    private void setUpUsername(TextView tv, com.sample.soundcloud.realm.models.UserProfile userProfile) {
+    private void setUpUsername(TextView tv, RealmUserProfile userProfile) {
         String userName = userProfile.getUsername();
         if (!TextUtils.isEmpty(userName)) {
             mUsernameTextView.setText(userName);
@@ -495,7 +515,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
         }
     }
 
-    private void setUpLocation(TextView tv, com.sample.soundcloud.realm.models.UserProfile userProfile) {
+    private void setUpLocation(TextView tv, RealmUserProfile userProfile) {
         String city = userProfile.getCity();
         String country = userProfile.getCountry();
 
@@ -516,7 +536,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
         }
     }
 
-    private void setUpFollowersCount(TextView tv, com.sample.soundcloud.realm.models.UserProfile userProfile) {
+    private void setUpFollowersCount(TextView tv, RealmUserProfile userProfile) {
         int followersCount = userProfile.getFollowersCount();
         if (followersCount > 0) {
             if (followersCount > 1000) {
@@ -533,7 +553,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
         }
     }
 
-    private void setUpTrackCount(TextView tv, com.sample.soundcloud.realm.models.UserProfile userProfile) {
+    private void setUpTrackCount(TextView tv, RealmUserProfile userProfile) {
         int trackCount = userProfile.getTrackCount();
         if (trackCount > 0) {
             if (trackCount > 1000) {
@@ -550,7 +570,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
         }
     }
 
-    private void setUpPlaylistCount(TextView tv, com.sample.soundcloud.realm.models.UserProfile userProfile) {
+    private void setUpPlaylistCount(TextView tv, RealmUserProfile userProfile) {
         int playlistCount = userProfile.getPlaylistCount();
         if (playlistCount > 0) {
             if (playlistCount > 1000) {
@@ -567,11 +587,11 @@ public class AccountFragment extends Fragment implements // region Interfaces
         }
     }
 
-    private void setUpFavoriteTracks(RealmList<com.sample.soundcloud.realm.models.Track> tracks) {
+    private void setUpFavoriteTracks(RealmList<RealmTrack> tracks) {
         mFavoritesAdapter.clear();
 
         if (tracks != null) {
-            for (com.sample.soundcloud.realm.models.Track track : tracks) {
+            for (RealmTrack track : tracks) {
                 mFavoritesAdapter.add(mFavoritesAdapter.getItemCount(), track);
             }
         }
@@ -583,12 +603,12 @@ public class AccountFragment extends Fragment implements // region Interfaces
         }
     }
 
-    private void playInMediaPlayer(com.sample.soundcloud.realm.models.Track track, String streamUrl) {
+    private void playInMediaPlayer(RealmTrack track, String streamUrl) {
         String artworkUrl = track.getArtworkUrl();
         String title = track.getTitle();
         String artist = "";
 
-        com.sample.soundcloud.realm.models.UserProfile userProfile = track.getUser();
+        RealmUserProfile userProfile = track.getUser();
         if (userProfile != null) {
             artist = userProfile.getUsername();
         }

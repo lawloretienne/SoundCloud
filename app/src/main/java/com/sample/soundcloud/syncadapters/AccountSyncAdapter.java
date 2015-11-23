@@ -16,6 +16,9 @@ import com.sample.soundcloud.SoundcloudConstants;
 import com.sample.soundcloud.network.Api;
 import com.sample.soundcloud.network.models.Track;
 import com.sample.soundcloud.network.models.UserProfile;
+import com.sample.soundcloud.realm.models.RealmAccount;
+import com.sample.soundcloud.realm.models.RealmTrack;
+import com.sample.soundcloud.realm.models.RealmUserProfile;
 
 import java.util.List;
 
@@ -96,9 +99,9 @@ public class AccountSyncAdapter extends AbstractThreadedSyncAdapter {
             UserProfile userProfile = Api.getService(Api.getEndpointUrl()).getUserProfileSynchronous(SoundcloudConstants.USERNAME);
             List<Track> tracks = Api.getService(Api.getEndpointUrl()).getFavoriteTracksSynchronous(SoundcloudConstants.USERNAME);
 
-            com.sample.soundcloud.network.models.Account account = new com.sample.soundcloud.network.models.Account(userProfile, tracks);
+            com.sample.soundcloud.models.Account account = new com.sample.soundcloud.models.Account(userProfile, tracks);
 
-            com.sample.soundcloud.realm.models.Account cachedAccount = getCachedAccount();
+            RealmAccount cachedAccount = getCachedAccount();
             if ((cachedAccount != null  && !account.equals(cachedAccount)
                         || cachedAccount == null)) {
                 // Account has changed or loaded for the first time
@@ -142,19 +145,19 @@ public class AccountSyncAdapter extends AbstractThreadedSyncAdapter {
         return errorMessage;
     }
 
-    private void persistAccount(com.sample.soundcloud.network.models.Account account){
+    private void persistAccount(com.sample.soundcloud.models.Account account){
         UserProfile userProfile = account.getUserProfile();
         List<Track> tracks = account.getTracks();
 
         mRealm.beginTransaction();
 
-        mRealm.clear(com.sample.soundcloud.network.models.Account.class);
+        mRealm.clear(RealmAccount.class);
 
-        com.sample.soundcloud.realm.models.Account realmAccount =
-                mRealm.createObject(com.sample.soundcloud.realm.models.Account.class);
+        RealmAccount realmAccount =
+                mRealm.createObject(RealmAccount.class);
 
-        com.sample.soundcloud.realm.models.UserProfile realmUserProfile =
-                mRealm.createObject(com.sample.soundcloud.realm.models.UserProfile.class);
+        RealmUserProfile realmUserProfile =
+                mRealm.createObject(RealmUserProfile.class);
 
         realmUserProfile.setAvatarUrl(userProfile.getAvatarUrl());
         realmUserProfile.setCity(userProfile.getCity());
@@ -166,10 +169,10 @@ public class AccountSyncAdapter extends AbstractThreadedSyncAdapter {
 
         realmAccount.setUserProfile(realmUserProfile);
 
-        RealmList<com.sample.soundcloud.realm.models.Track> realmTracks = new RealmList<>();
+        RealmList<RealmTrack> realmTracks = new RealmList<>();
         for(Track track : tracks){
-            com.sample.soundcloud.realm.models.Track realmTrack
-                    = mRealm.createObject(com.sample.soundcloud.realm.models.Track.class);
+            RealmTrack realmTrack
+                    = mRealm.createObject(RealmTrack.class);
             realmTrack.setArtworkUrl(track.getArtworkUrl());
             realmTrack.setStreamUrl(track.getStreamUrl());
             realmTrack.setDuration(track.getDuration());
@@ -178,8 +181,8 @@ public class AccountSyncAdapter extends AbstractThreadedSyncAdapter {
             realmTrack.setPlaybackCount(track.getPlaybackCount());
             realmTrack.setTitle(track.getTitle());
 
-            com.sample.soundcloud.realm.models.UserProfile realmUser
-                    = mRealm.createObject(com.sample.soundcloud.realm.models.UserProfile.class);
+            RealmUserProfile realmUser
+                    = mRealm.createObject(RealmUserProfile.class);
             realmUser.setUsername(track.getUser().getUsername());
             realmTrack.setUser(realmUser);
 
@@ -193,9 +196,9 @@ public class AccountSyncAdapter extends AbstractThreadedSyncAdapter {
         mRealm.commitTransaction();
     }
 
-    private com.sample.soundcloud.realm.models.Account getCachedAccount(){
-        RealmResults<com.sample.soundcloud.realm.models.Account> realmResults
-                = mRealm.where(com.sample.soundcloud.realm.models.Account.class).findAll();
+    private RealmAccount getCachedAccount(){
+        RealmResults<RealmAccount> realmResults
+                = mRealm.where(RealmAccount.class).findAll();
 
         if(realmResults != null && realmResults.size() > 0){
             return realmResults.get(0);

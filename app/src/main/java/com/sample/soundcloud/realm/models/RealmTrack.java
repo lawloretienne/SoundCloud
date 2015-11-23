@@ -7,14 +7,14 @@ import io.realm.RealmObject;
 /**
  * Created by etiennelawlor on 4/18/15.
  */
-public class Track extends RealmObject {
+public class RealmTrack extends RealmObject {
 
     // region Member Variables
     private long id;
     private String createdAt;
     private long duration;
     private String title;
-    private UserProfile user;
+    private RealmUserProfile user;
     private String artworkUrl;
     private String streamUrl;
     private int playbackCount;
@@ -43,7 +43,7 @@ public class Track extends RealmObject {
             return title;
     }
 
-    public UserProfile getUser() {
+    public RealmUserProfile getUser() {
         return user;
     }
 
@@ -84,7 +84,7 @@ public class Track extends RealmObject {
         this.title = title;
     }
 
-    public void setUser(UserProfile user) {
+    public void setUser(RealmUserProfile user) {
         this.user = user;
     }
 

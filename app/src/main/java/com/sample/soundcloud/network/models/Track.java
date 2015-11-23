@@ -3,6 +3,7 @@ package com.sample.soundcloud.network.models;
 import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
+import com.sample.soundcloud.realm.models.RealmTrack;
 
 /**
  * Created by etiennelawlor on 3/21/15.
@@ -59,7 +60,7 @@ public final class Track {
 //            policy: "ALLOW"
 //    }
 
-    //region Variables
+    // region Fields
     @SerializedName("kind")
     private String kind;
     @SerializedName("id")
@@ -150,9 +151,9 @@ public final class Track {
     private String attachmentsUri;
     @SerializedName("policy")
     private String policy;
-    //endregion
+    // endregion
 
-    //region Getters
+    // region Getters
 
     public String getKind() {
         if (TextUtils.isEmpty(kind))
@@ -465,8 +466,6 @@ public final class Track {
         else
             return policy;
     }
-
-
     //endregion
 
     // region Setters
@@ -650,8 +649,6 @@ public final class Track {
     public void setPolicy(String policy) {
         this.policy = policy;
     }
-
-
     // endregion
 
     @Override
@@ -662,11 +659,11 @@ public final class Track {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof com.sample.soundcloud.realm.models.Track)) {
+        if (!(obj instanceof RealmTrack)) {
             return false;
         }
 
-        return this.getId() == ((com.sample.soundcloud.realm.models.Track) obj).getId()
-                && this.getCreatedAt().equals(((com.sample.soundcloud.realm.models.Track) obj).getCreatedAt());
+        return this.getId() == ((RealmTrack) obj).getId()
+                && this.getCreatedAt().equals(((RealmTrack) obj).getCreatedAt());
     }
 }

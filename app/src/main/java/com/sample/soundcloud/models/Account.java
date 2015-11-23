@@ -1,4 +1,9 @@
-package com.sample.soundcloud.network.models;
+package com.sample.soundcloud.models;
+
+import com.sample.soundcloud.network.models.Track;
+import com.sample.soundcloud.network.models.UserProfile;
+import com.sample.soundcloud.realm.models.RealmAccount;
+import com.sample.soundcloud.realm.models.RealmTrack;
 
 import java.util.List;
 
@@ -49,11 +54,11 @@ public class Account {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof com.sample.soundcloud.realm.models.Account)) {
+        if (!(obj instanceof RealmAccount)) {
             return false;
         }
 
-        RealmList<com.sample.soundcloud.realm.models.Track> realmTracks = ((com.sample.soundcloud.realm.models.Account) obj).getTracks();
+        RealmList<RealmTrack> realmTracks = ((RealmAccount) obj).getTracks();
 
         if (realmTracks.size() != this.getTracks().size()) {
             return false;
@@ -62,14 +67,14 @@ public class Account {
         int trackCount = this.getTracks().size();
         for (int i = 0; i < trackCount; i++) {
             Track a = getTracks().get(i);
-            com.sample.soundcloud.realm.models.Track b = realmTracks.get(i);
+            RealmTrack b = realmTracks.get(i);
 
             if (!(a.equals(b))) {
                 return false;
             }
         }
 
-        if (!(this.getUserProfile().equals(((com.sample.soundcloud.realm.models.Account) obj).getUserProfile()))) {
+        if (!(this.getUserProfile().equals(((RealmAccount) obj).getUserProfile()))) {
             return false;
         }
 

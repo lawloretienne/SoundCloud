@@ -51,7 +51,7 @@ public class SoundcloudApplication extends Application {
     }
 
     // region Helper Methods
-    public static SoundcloudApplication get() {
+    public static SoundcloudApplication getInstance() {
         return sCurrentApplication;
     }
 

@@ -10,8 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sample.soundcloud.R;
-import com.sample.soundcloud.network.models.UserProfile;
-import com.sample.soundcloud.realm.models.Track;
+import com.sample.soundcloud.realm.models.RealmTrack;
 import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
@@ -19,8 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 
 /**
@@ -29,12 +28,8 @@ import butterknife.OnClick;
 public class FavoritesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     // region Member Variables
-    private Context mContext;
-    private List<Track> mTracks;
+    private List<RealmTrack> mTracks;
     private OnItemClickListener mOnItemClickListener;
-    // endregion
-
-    // region Listeners
     // endregion
 
     // region Interfaces
@@ -44,8 +39,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     // endregion
 
     // region Constructors
-    public FavoritesAdapter(Context context) {
-        mContext = context;
+    public FavoritesAdapter() {
         mTracks = new ArrayList<>();
     }
     // endregion
@@ -59,10 +53,10 @@ public class FavoritesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
         TrackViewHolder holder = (TrackViewHolder) viewHolder;
 
-        final Track track = mTracks.get(position);
+        final RealmTrack track = mTracks.get(position);
 
         if (track != null) {
             setUpArtWork(holder.mArtworkImageView, track);
@@ -70,6 +64,15 @@ public class FavoritesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             setUpTitle(holder.mTitleTextView, track);
             setUpDuration(holder.mDurationTextView, track);
             setUpPlaybackCount(holder.mPlaybackCountTextView, track);
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mOnItemClickListener != null) {
+                        mOnItemClickListener.onItemClick(position);
+                    }
+                }
+            });
         }
     }
 
@@ -79,7 +82,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     // region Helper Methods
-    public void add(int position, Track item) {
+    public void add(int position, RealmTrack item) {
         mTracks.add(position, item);
         notifyItemInserted(position);
     }
@@ -95,7 +98,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         notifyItemRemoved(position);
     }
 
-    public Track getItem(int position) {
+    public RealmTrack getItem(int position) {
         return mTracks.get(position);
     }
 
@@ -103,14 +106,14 @@ public class FavoritesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         this.mOnItemClickListener = onItemClickListener;
     }
 
-    private void setUpArtWork(ImageView iv, Track track) {
+    private void setUpArtWork(ImageView iv, RealmTrack track) {
         String artworkUrl = track.getArtworkUrl();
 
         if (!TextUtils.isEmpty(artworkUrl)) {
             artworkUrl = artworkUrl.replace("large.jpg", "t500x500.jpg");
 
 //                        https://i1.sndcdn.com/avatars-000028479557-aid19w-large.jpg
-            Picasso.with(mContext)
+            Picasso.with(iv.getContext())
                     .load(artworkUrl)
                             //                .placeholder(R.drawable.ic_placeholder)
                             //                .error(R.drawable.ic_error)
@@ -118,19 +121,19 @@ public class FavoritesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
-    private void setUpUsername(TextView tv, Track track) {
+    private void setUpUsername(TextView tv, RealmTrack track) {
         if (track.getUser() != null) {
             String username = track.getUser().getUsername();
             tv.setText(username);
         }
     }
 
-    private void setUpTitle(TextView tv, Track track) {
+    private void setUpTitle(TextView tv, RealmTrack track) {
         String title = track.getTitle();
         tv.setText(title);
     }
 
-    private void setUpDuration(TextView tv, Track track) {
+    private void setUpDuration(TextView tv, RealmTrack track) {
         long duration = track.getDuration();
         duration /= 1000;
 
@@ -162,7 +165,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         tv.setText(time);
     }
 
-    private void setUpPlaybackCount(TextView tv, Track track) {
+    private void setUpPlaybackCount(TextView tv, RealmTrack track) {
         int playbackCount = track.getPlaybackCount();
         if (playbackCount > 0) {
             String formattedPlaybackCount = NumberFormat.getNumberInstance(Locale.US).format(playbackCount);
@@ -173,28 +176,21 @@ public class FavoritesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     // region Inner Classes
 
-    public class TrackViewHolder extends RecyclerView.ViewHolder {
-        @InjectView(R.id.artwork_iv)
+    public static class TrackViewHolder extends RecyclerView.ViewHolder {
+        @Bind(R.id.artwork_iv)
         ImageView mArtworkImageView;
-        @InjectView(R.id.username_tv)
+        @Bind(R.id.username_tv)
         TextView mUsernameTextView;
-        @InjectView(R.id.title_tv)
+        @Bind(R.id.title_tv)
         TextView mTitleTextView;
-        @InjectView(R.id.duration_tv)
+        @Bind(R.id.duration_tv)
         TextView mDurationTextView;
-        @InjectView(R.id.playback_count_tv)
+        @Bind(R.id.playback_count_tv)
         TextView mPlaybackCountTextView;
 
-        @OnClick(R.id.track_row_root_rl)
-        void onTrackClick() {
-            if (mOnItemClickListener != null) {
-                mOnItemClickListener.onItemClick(getPosition());
-            }
-        }
-
-        TrackViewHolder(View view) {
+        public TrackViewHolder(View view) {
             super(view);
-            ButterKnife.inject(this, view);
+            ButterKnife.bind(this, view);
         }
     }
 

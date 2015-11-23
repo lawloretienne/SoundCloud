@@ -7,14 +7,14 @@ import android.support.v7.widget.Toolbar;
 import com.sample.soundcloud.R;
 import com.sample.soundcloud.fragments.AccountFragment;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
-public class MainActivity extends AppCompatActivity
-{
+public class MainActivity extends AppCompatActivity {
 
     // region Member Variables
-    @InjectView(R.id.toolbar)Toolbar mToolbar;
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
     // endregion
 
     // region Lifecycle Methods
@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         setSupportActionBar(mToolbar);
 

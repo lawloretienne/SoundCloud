@@ -3,6 +3,7 @@ package com.sample.soundcloud.network.models;
 import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
+import com.sample.soundcloud.realm.models.RealmUserProfile;
 
 import timber.log.Timber;
 
@@ -49,7 +50,7 @@ public final class UserProfile {
 //        ]
 //    }
 
-    // region Variables
+    // region Fields
     @SerializedName("id")
     private Long id;
     @SerializedName("kind")
@@ -105,7 +106,7 @@ public final class UserProfile {
 
     // endregion
 
-    //region Getters
+    // region Getters
 
     public Long getId() {
         if (id == null)
@@ -408,20 +409,20 @@ public final class UserProfile {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof com.sample.soundcloud.realm.models.UserProfile)) {
+        if (!(obj instanceof RealmUserProfile)) {
             return false;
         }
 
         Timber.d("Soundcloud : equals() : this.getFollowersCount() - " + this.getFollowersCount());
         Timber.d("Soundcloud : equals() : ((com.sample.soundcloud.realm.models.UserProfile)obj).getFollowersCount() - "
-                + ((com.sample.soundcloud.realm.models.UserProfile) obj).getFollowersCount());
+                + ((RealmUserProfile) obj).getFollowersCount());
 
-        return this.getUsername().equals(((com.sample.soundcloud.realm.models.UserProfile) obj).getUsername())
-                && this.getAvatarUrl().equals(((com.sample.soundcloud.realm.models.UserProfile) obj).getAvatarUrl())
-                && this.getCountry().equals(((com.sample.soundcloud.realm.models.UserProfile) obj).getCountry())
-                && this.getCity().equals(((com.sample.soundcloud.realm.models.UserProfile) obj).getCity())
-                && this.getTrackCount() == ((com.sample.soundcloud.realm.models.UserProfile) obj).getTrackCount()
-                && this.getPlaylistCount() == ((com.sample.soundcloud.realm.models.UserProfile) obj).getPlaylistCount()
-                && this.getFollowersCount() == ((com.sample.soundcloud.realm.models.UserProfile) obj).getFollowersCount();
+        return this.getUsername().equals(((RealmUserProfile) obj).getUsername())
+                && this.getAvatarUrl().equals(((RealmUserProfile) obj).getAvatarUrl())
+                && this.getCountry().equals(((RealmUserProfile) obj).getCountry())
+                && this.getCity().equals(((RealmUserProfile) obj).getCity())
+                && this.getTrackCount() == ((RealmUserProfile) obj).getTrackCount()
+                && this.getPlaylistCount() == ((RealmUserProfile) obj).getPlaylistCount()
+                && this.getFollowersCount() == ((RealmUserProfile) obj).getFollowersCount();
     }
 }

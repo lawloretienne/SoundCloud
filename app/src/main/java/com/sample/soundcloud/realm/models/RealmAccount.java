@@ -6,29 +6,29 @@ import io.realm.RealmObject;
 /**
  * Created by etiennelawlor on 4/18/15.
  */
-public class Account extends RealmObject {
+public class RealmAccount extends RealmObject {
 
     // region Member Variables
-    private UserProfile userProfile;
-    private RealmList<Track> tracks;
+    private RealmUserProfile userProfile;
+    private RealmList<RealmTrack> tracks;
     // endregion
 
     // region Getters
-    public UserProfile getUserProfile() {
+    public RealmUserProfile getUserProfile() {
         return userProfile;
     }
 
-    public RealmList<Track> getTracks() {
+    public RealmList<RealmTrack> getTracks() {
         return tracks;
     }
     // endregion
 
     // region Setters
-    public void setUserProfile(UserProfile userProfile) {
+    public void setUserProfile(RealmUserProfile userProfile) {
         this.userProfile = userProfile;
     }
 
-    public void setTracks(RealmList<Track> tracks) {
+    public void setTracks(RealmList<RealmTrack> tracks) {
         this.tracks = tracks;
     }
     // endregion
