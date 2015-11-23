@@ -46,6 +46,8 @@ public class RealmUtility {
         RealmResults<RealmAccount> realmResults
                 = mRealm.where(RealmAccount.class).findAll();
 
+        mRealm.close();
+
         if(realmResults != null && realmResults.size() > 0){
             return realmResults.get(0);
         } else {
@@ -64,6 +66,8 @@ public class RealmUtility {
         
         RealmResults<RealmAccount> realmResults
                 = mRealm.where(RealmAccount.class).findAll();
+
+        mRealm.close();
 
         if (realmResults != null && realmResults.size() > 0) {
             return true;
@@ -128,5 +132,7 @@ public class RealmUtility {
 
         mRealm.copyToRealm(realmAccount);
         mRealm.commitTransaction();
+
+        mRealm.close();
     }
 }
