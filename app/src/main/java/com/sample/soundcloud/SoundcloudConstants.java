@@ -5,9 +5,9 @@ package com.sample.soundcloud;
  */
 public class SoundcloudConstants {
 
-    public static final String USERNAME = "hardwell";
+//    public static final String USERNAME = "hardwell";
 //    public static final String USERNAME = "eric-oetting";
-//    public static final String USERNAME = "kaskade";
+    public static final String USERNAME = "kaskade";
 //    public static final String USERNAME = "lawlorslaw";
 //    public static final String USERNAME = "calvinharris";
 //    public static final String USERNAME = "mallywobbles";

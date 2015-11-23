@@ -12,19 +12,17 @@ import android.content.Context;
 import android.content.SyncResult;
 import android.os.Bundle;
 
+import com.sample.soundcloud.SoundcloudApplication;
 import com.sample.soundcloud.SoundcloudConstants;
 import com.sample.soundcloud.network.Api;
 import com.sample.soundcloud.network.models.Track;
 import com.sample.soundcloud.network.models.UserProfile;
+import com.sample.soundcloud.realm.RealmUtility;
 import com.sample.soundcloud.realm.models.RealmAccount;
-import com.sample.soundcloud.realm.models.RealmTrack;
-import com.sample.soundcloud.realm.models.RealmUserProfile;
 
 import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmList;
-import io.realm.RealmResults;
 import io.realm.exceptions.RealmMigrationNeededException;
 import retrofit.RetrofitError;
 import timber.log.Timber;
@@ -78,15 +76,17 @@ public class AccountSyncAdapter extends AbstractThreadedSyncAdapter {
             ContentProviderClient contentProviderClient,
             SyncResult syncResult) {
 
-        // Redownload account info
-        try {
-            mRealm = Realm.getInstance(mContext);
-            loadAccount();
-            mRealm.close();
+        Context context = SoundcloudApplication.getInstance().getApplicationContext();
+        try{
+            mRealm = Realm.getInstance(context);
         } catch (RealmMigrationNeededException e) {
-            // in this case you need migration.
-            // https://github.com/realm/realm-java/tree/master/examples/migrationExample
+            Realm.deleteRealm(RealmUtility.getRealmConfiguration(context));
+            mRealm = Realm.getInstance(context);
         }
+
+        // Redownload account info
+        loadAccount();
+        mRealm.close();
 
     }
 
@@ -101,13 +101,16 @@ public class AccountSyncAdapter extends AbstractThreadedSyncAdapter {
 
             com.sample.soundcloud.models.Account account = new com.sample.soundcloud.models.Account(userProfile, tracks);
 
-            RealmAccount cachedAccount = getCachedAccount();
+            RealmAccount cachedAccount = RealmUtility.getCachedAccount();
             if ((cachedAccount != null  && !account.equals(cachedAccount)
                         || cachedAccount == null)) {
                 // Account has changed or loaded for the first time
-                persistAccount(account);
+                RealmUtility.persistAccount(account);
+
+                Timber.d("Soundcloud : loadAccount() : There were changes to the account");
             } else {
                 // No changes to the account
+                Timber.d("Soundcloud : loadAccount() : No changes to the account");
             }
         } catch (Exception e) {
             Timber.e(e, "Soundcloud error");
@@ -143,68 +146,6 @@ public class AccountSyncAdapter extends AbstractThreadedSyncAdapter {
         }
 
         return errorMessage;
-    }
-
-    private void persistAccount(com.sample.soundcloud.models.Account account){
-        UserProfile userProfile = account.getUserProfile();
-        List<Track> tracks = account.getTracks();
-
-        mRealm.beginTransaction();
-
-        mRealm.clear(RealmAccount.class);
-
-        RealmAccount realmAccount =
-                mRealm.createObject(RealmAccount.class);
-
-        RealmUserProfile realmUserProfile =
-                mRealm.createObject(RealmUserProfile.class);
-
-        realmUserProfile.setAvatarUrl(userProfile.getAvatarUrl());
-        realmUserProfile.setCity(userProfile.getCity());
-        realmUserProfile.setCountry(userProfile.getCountry());
-        realmUserProfile.setFollowersCount(userProfile.getFollowersCount());
-        realmUserProfile.setPlaylistCount(userProfile.getPlaylistCount());
-        realmUserProfile.setTrackCount(userProfile.getTrackCount());
-        realmUserProfile.setUsername(userProfile.getUsername());
-
-        realmAccount.setUserProfile(realmUserProfile);
-
-        RealmList<RealmTrack> realmTracks = new RealmList<>();
-        for(Track track : tracks){
-            RealmTrack realmTrack
-                    = mRealm.createObject(RealmTrack.class);
-            realmTrack.setArtworkUrl(track.getArtworkUrl());
-            realmTrack.setStreamUrl(track.getStreamUrl());
-            realmTrack.setDuration(track.getDuration());
-            realmTrack.setId(track.getId());
-            realmTrack.setCreatedAt(track.getCreatedAt());
-            realmTrack.setPlaybackCount(track.getPlaybackCount());
-            realmTrack.setTitle(track.getTitle());
-
-            RealmUserProfile realmUser
-                    = mRealm.createObject(RealmUserProfile.class);
-            realmUser.setUsername(track.getUser().getUsername());
-            realmTrack.setUser(realmUser);
-
-            realmTracks.add(realmTrack);
-        }
-
-        realmAccount.setTracks(realmTracks);
-
-        mRealm.copyToRealm(realmAccount);
-
-        mRealm.commitTransaction();
-    }
-
-    private RealmAccount getCachedAccount(){
-        RealmResults<RealmAccount> realmResults
-                = mRealm.where(RealmAccount.class).findAll();
-
-        if(realmResults != null && realmResults.size() > 0){
-            return realmResults.get(0);
-        } else {
-            return null;
-        }
     }
     // endregion
 

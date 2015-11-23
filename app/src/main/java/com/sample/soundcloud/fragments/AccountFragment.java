@@ -32,6 +32,7 @@ import com.sample.soundcloud.models.Account;
 import com.sample.soundcloud.network.models.Track;
 import com.sample.soundcloud.network.models.UserProfile;
 import com.sample.soundcloud.otto.BusProvider;
+import com.sample.soundcloud.realm.RealmUtility;
 import com.sample.soundcloud.realm.models.RealmAccount;
 import com.sample.soundcloud.realm.models.RealmTrack;
 import com.sample.soundcloud.realm.models.RealmUserProfile;
@@ -105,15 +106,6 @@ public class AccountFragment extends Fragment implements // region Interfaces
     private Realm mRealm;
     // endregion
 
-    private static RealmConfiguration getRealmConfiguration(Context context) {
-//        return new RealmConfiguration.Builder(context)
-//                .name("loop.realm")
-//                .schemaVersion(1)
-//                .build();
-
-        return new RealmConfiguration.Builder(context).build();
-    }
-
     // region Listeners
 
     private RealmChangeListener mAccountChangedListener = new RealmChangeListener() {
@@ -123,7 +115,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
 
             mErrorLinearLayout.setVisibility(View.GONE);
 
-            RealmAccount cachedAccount = getCachedAccount();
+            RealmAccount cachedAccount = RealmUtility.getCachedAccount();
 
             if (cachedAccount != null) {
                 if (cachedAccount.getUserProfile() != null) {
@@ -168,17 +160,14 @@ public class AccountFragment extends Fragment implements // region Interfaces
         BusProvider.getInstance().register(this);
 
         Context context = SoundcloudApplication.getInstance().getApplicationContext();
-
         try {
-            mRealm = Realm.getInstance(getActivity());
-            mRealm.addChangeListener(mAccountChangedListener);
+            mRealm = Realm.getInstance(context);
         } catch (RealmMigrationNeededException e) {
-            // in this case you need migration.
-            // https://github.com/realm/realm-java/tree/master/examples/migrationExample
-
-            Realm.deleteRealm(getRealmConfiguration(context));
+            Realm.deleteRealm(RealmUtility.getRealmConfiguration(context));
             mRealm = Realm.getInstance(context);
         }
+
+        mRealm.addChangeListener(mAccountChangedListener);
 
         // Create account, if needed
         android.accounts.Account androidAccount = createSyncAccount(getActivity());
@@ -315,10 +304,10 @@ public class AccountFragment extends Fragment implements // region Interfaces
 
     private void loadAccount() {
 
-        if (isAccountCached()) {
+        if (RealmUtility.isAccountCached()) {
 
             // Account is cached
-            RealmAccount cachedAccount = getCachedAccount();
+            RealmAccount cachedAccount = RealmUtility.getCachedAccount();
 
             if (cachedAccount != null) {
                 if (cachedAccount.getUserProfile() != null) {
@@ -351,7 +340,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
                         @Override
                         public void call(Account account) {
                             if (account != null) {
-                                persistAccount(account);
+                                RealmUtility.persistAccount(account);
                             }
                         }
                     }, new Action1<Throwable>() {
@@ -396,78 +385,6 @@ public class AccountFragment extends Fragment implements // region Interfaces
         }
 
         return errorMessage;
-    }
-
-    private boolean isAccountCached() {
-        RealmResults<RealmAccount> realmResults
-                = mRealm.where(RealmAccount.class).findAll();
-
-        if (realmResults != null && realmResults.size() > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private RealmAccount getCachedAccount() {
-        RealmResults<RealmAccount> realmResults
-                = mRealm.where(RealmAccount.class).findAll();
-
-        if (realmResults != null && realmResults.size() > 0) {
-            return realmResults.get(0);
-        } else {
-            return null;
-        }
-    }
-
-    private void persistAccount(Account account) {
-        UserProfile userProfile = account.getUserProfile();
-        List<Track> tracks = account.getTracks();
-
-        mRealm.beginTransaction();
-
-        mRealm.clear(RealmAccount.class);
-
-        RealmAccount realmAccount =
-                mRealm.createObject(RealmAccount.class);
-
-        RealmUserProfile realmUserProfile =
-                mRealm.createObject(RealmUserProfile.class);
-
-        realmUserProfile.setAvatarUrl(userProfile.getAvatarUrl());
-        realmUserProfile.setCity(userProfile.getCity());
-        realmUserProfile.setCountry(userProfile.getCountry());
-        realmUserProfile.setFollowersCount(userProfile.getFollowersCount());
-        realmUserProfile.setPlaylistCount(userProfile.getPlaylistCount());
-        realmUserProfile.setTrackCount(userProfile.getTrackCount());
-        realmUserProfile.setUsername(userProfile.getUsername());
-
-        realmAccount.setUserProfile(realmUserProfile);
-
-        RealmList<RealmTrack> realmTracks = new RealmList<>();
-        for (Track track : tracks) {
-            RealmTrack realmTrack
-                    = mRealm.createObject(RealmTrack.class);
-            realmTrack.setArtworkUrl(track.getArtworkUrl());
-            realmTrack.setStreamUrl(track.getStreamUrl());
-            realmTrack.setDuration(track.getDuration());
-            realmTrack.setId(track.getId());
-            realmTrack.setCreatedAt(track.getCreatedAt());
-            realmTrack.setPlaybackCount(track.getPlaybackCount());
-            realmTrack.setTitle(track.getTitle());
-
-            RealmUserProfile realmUser
-                    = mRealm.createObject(RealmUserProfile.class);
-            realmUser.setUsername(track.getUser().getUsername());
-            realmTrack.setUser(realmUser);
-
-            realmTracks.add(realmTrack);
-        }
-
-        realmAccount.setTracks(realmTracks);
-
-        mRealm.copyToRealm(realmAccount);
-        mRealm.commitTransaction();
     }
 
     private void setUpUserProfile(RealmUserProfile userProfile) {
