@@ -66,7 +66,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textColor="@color/grey_800"
+            android:textColor="@color/primary_text"
             android:layout_margin="16dp"
             tools:text="Can't load data.\nCheck your network connection."
             android:textSize="16sp"

@@ -20,7 +20,7 @@
             android:id="@+id/empty_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/grey_800"
+            android:textColor="@color/primary_text"
             android:textSize="16sp"
             android:drawableTop="@drawable/ic_large_track"
             android:drawablePadding="8dp"
