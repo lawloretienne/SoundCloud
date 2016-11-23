@@ -74,44 +74,46 @@ public class AccountFragment extends Fragment implements // region Interfaces
     private static final long SYNC_INTERVAL = 60L;
     // endregion
 
-    // region Member Variables
+    // region Views
     @Bind(R.id.avatar_iv)
-    ImageView mAvatarImageView;
+    ImageView avatarImageView;
     @Bind(R.id.username_tv)
-    TextView mUsernameTextView;
+    TextView usernameTextView;
     @Bind(R.id.location_tv)
-    TextView mLocationTextView;
+    TextView locationTextView;
     @Bind(R.id.followers_count_tv)
-    TextView mFollowersCountTextView;
+    TextView followersCountTextView;
     @Bind(R.id.track_count_tv)
-    TextView mTrackCountTextView;
+    TextView trackCountTextView;
     @Bind(R.id.playlist_count_tv)
-    TextView mPlaylistCountTextView;
+    TextView playlistCountTextView;
     @Bind(R.id.favorites_rv)
-    RecyclerView mFavoritesRecyclerView;
+    RecyclerView favoritesRecyclerView;
     @Bind(android.R.id.empty)
-    View mEmptyView;
+    View emptyView;
     @Bind(R.id.account_ll)
-    LinearLayout mAccountLinearLayout;
+    LinearLayout accountLinearLayout;
     @Bind(R.id.pb)
-    ProgressBar mProgressBar;
+    ProgressBar progressBar;
     @Bind(R.id.error_ll)
-    LinearLayout mErrorLinearLayout;
+    LinearLayout errorLinearLayout;
     @Bind(R.id.error_tv)
-    TextView mErrorTextView;
+    TextView errorTextView;
+    // endregion
 
-    private FavoritesAdapter mFavoritesAdapter;
-    private Realm mRealm;
+    // region Member Variables
+    private FavoritesAdapter favoritesAdapter;
+    private Realm realm;
     // endregion
 
     // region Listeners
 
-    private RealmChangeListener mAccountChangedListener = new RealmChangeListener() {
+    private RealmChangeListener accountChangedListener = new RealmChangeListener() {
         @Override
         public void onChange() {
             Timber.d("Soundcloud : mAccountChangedListener : onChange()");
 
-            mErrorLinearLayout.setVisibility(View.GONE);
+            errorLinearLayout.setVisibility(View.GONE);
 
             RealmAccount cachedAccount = RealmUtility.getCachedAccount();
 
@@ -125,8 +127,8 @@ public class AccountFragment extends Fragment implements // region Interfaces
                 }
             }
 
-            mProgressBar.setVisibility(View.GONE);
-            mAccountLinearLayout.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+            accountLinearLayout.setVisibility(View.VISIBLE);
         }
     };
     // endregion
@@ -159,13 +161,13 @@ public class AccountFragment extends Fragment implements // region Interfaces
 
         Context context = SoundcloudApplication.getInstance().getApplicationContext();
         try {
-            mRealm = Realm.getInstance(context);
+            realm = Realm.getInstance(context);
         } catch (RealmMigrationNeededException e) {
             Realm.deleteRealm(RealmUtility.getRealmConfiguration(context));
-            mRealm = Realm.getInstance(context);
+            realm = Realm.getInstance(context);
         }
 
-        mRealm.addChangeListener(mAccountChangedListener);
+        realm.addChangeListener(accountChangedListener);
 
         // Create account, if needed
         android.accounts.Account androidAccount = createSyncAccount(getActivity());
@@ -194,11 +196,11 @@ public class AccountFragment extends Fragment implements // region Interfaces
         super.onViewCreated(view, savedInstanceState);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        mFavoritesRecyclerView.setLayoutManager(layoutManager);
-        mFavoritesAdapter = new FavoritesAdapter();
-        mFavoritesAdapter.setOnItemClickListener(this);
+        favoritesRecyclerView.setLayoutManager(layoutManager);
+        favoritesAdapter = new FavoritesAdapter();
+        favoritesAdapter.setOnItemClickListener(this);
 
-        mFavoritesRecyclerView.setAdapter(mFavoritesAdapter);
+        favoritesRecyclerView.setAdapter(favoritesAdapter);
 
         // TODO handle pagination
         //        mFavoritesRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -248,8 +250,8 @@ public class AccountFragment extends Fragment implements // region Interfaces
     public void onDestroy() {
         super.onDestroy();
 
-        mRealm.removeChangeListener(mAccountChangedListener);
-        mRealm.close();
+        realm.removeChangeListener(accountChangedListener);
+        realm.close();
 
         RefWatcher refWatcher = SoundcloudApplication.getRefWatcher(getActivity());
         refWatcher.watch(this);
@@ -260,7 +262,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
     // region FavoritesAdapter.OnItemClickListener Methods
     @Override
     public void onItemClick(int position) {
-        final RealmTrack track = mFavoritesAdapter.getItem(position);
+        final RealmTrack track = favoritesAdapter.getItem(position);
 
         String streamUrl = track.getStreamUrl();
         long duration = track.getDuration();
@@ -317,8 +319,8 @@ public class AccountFragment extends Fragment implements // region Interfaces
                 }
             }
 
-            mProgressBar.setVisibility(View.GONE);
-            mAccountLinearLayout.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+            accountLinearLayout.setVisibility(View.VISIBLE);
 
         } else {
             // Account is not cached
@@ -349,12 +351,12 @@ public class AccountFragment extends Fragment implements // region Interfaces
                             if (throwable instanceof RetrofitError) {
                                 RetrofitError.Kind errorKind = ((RetrofitError) throwable).getKind();
 
-                                mErrorTextView.setText(getErrorMessage(errorKind));
+                                errorTextView.setText(getErrorMessage(errorKind));
                                 Timber.e(throwable, "Soundcloud error : errorMessage - " + getErrorMessage(errorKind));
 
-                                mProgressBar.setVisibility(View.GONE);
-                                if (mAccountLinearLayout.getVisibility() == View.GONE)
-                                    mErrorLinearLayout.setVisibility(View.VISIBLE);
+                                progressBar.setVisibility(View.GONE);
+                                if (accountLinearLayout.getVisibility() == View.GONE)
+                                    errorLinearLayout.setVisibility(View.VISIBLE);
                             }
                         }
                     });
@@ -387,12 +389,12 @@ public class AccountFragment extends Fragment implements // region Interfaces
 
     private void setUpUserProfile(RealmUserProfile userProfile) {
         if (userProfile != null) {
-            setUpAvatar(mAvatarImageView, userProfile);
-            setUpUsername(mUsernameTextView, userProfile);
-            setUpLocation(mLocationTextView, userProfile);
-            setUpFollowersCount(mFollowersCountTextView, userProfile);
-            setUpTrackCount(mTrackCountTextView, userProfile);
-            setUpPlaylistCount(mPlaylistCountTextView, userProfile);
+            setUpAvatar(avatarImageView, userProfile);
+            setUpUsername(usernameTextView, userProfile);
+            setUpLocation(locationTextView, userProfile);
+            setUpFollowersCount(followersCountTextView, userProfile);
+            setUpTrackCount(trackCountTextView, userProfile);
+            setUpPlaylistCount(playlistCountTextView, userProfile);
         }
     }
 
@@ -423,10 +425,10 @@ public class AccountFragment extends Fragment implements // region Interfaces
     private void setUpUsername(TextView tv, RealmUserProfile userProfile) {
         String userName = userProfile.getUsername();
         if (!TextUtils.isEmpty(userName)) {
-            mUsernameTextView.setText(userName);
-            mUsernameTextView.setVisibility(View.VISIBLE);
+            usernameTextView.setText(userName);
+            usernameTextView.setVisibility(View.VISIBLE);
         } else {
-            mUsernameTextView.setVisibility(View.GONE);
+            usernameTextView.setVisibility(View.GONE);
         }
     }
 
@@ -444,10 +446,10 @@ public class AccountFragment extends Fragment implements // region Interfaces
         }
 
         if (!TextUtils.isEmpty(location)) {
-            mLocationTextView.setText(location);
-            mLocationTextView.setVisibility(View.VISIBLE);
+            locationTextView.setText(location);
+            locationTextView.setVisibility(View.VISIBLE);
         } else {
-            mLocationTextView.setVisibility(View.GONE);
+            locationTextView.setVisibility(View.GONE);
         }
     }
 
@@ -503,18 +505,18 @@ public class AccountFragment extends Fragment implements // region Interfaces
     }
 
     private void setUpFavoriteTracks(RealmList<RealmTrack> tracks) {
-        mFavoritesAdapter.clear();
+        favoritesAdapter.clear();
 
         if (tracks != null) {
             for (RealmTrack track : tracks) {
-                mFavoritesAdapter.add(mFavoritesAdapter.getItemCount(), track);
+                favoritesAdapter.add(favoritesAdapter.getItemCount(), track);
             }
         }
 
-        if (mFavoritesAdapter.getItemCount() == 0) {
-            mEmptyView.setVisibility(View.VISIBLE);
+        if (favoritesAdapter.getItemCount() == 0) {
+            emptyView.setVisibility(View.VISIBLE);
         } else {
-            mEmptyView.setVisibility(View.GONE);
+            emptyView.setVisibility(View.GONE);
         }
     }
 

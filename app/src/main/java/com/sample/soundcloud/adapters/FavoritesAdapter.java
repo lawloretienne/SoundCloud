@@ -26,8 +26,8 @@ import butterknife.ButterKnife;
 public class FavoritesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     // region Member Variables
-    private List<RealmTrack> mTracks;
-    private OnItemClickListener mOnItemClickListener;
+    private List<RealmTrack> tracks;
+    private OnItemClickListener onItemClickListener;
     // endregion
 
     // region Interfaces
@@ -38,7 +38,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     // region Constructors
     public FavoritesAdapter() {
-        mTracks = new ArrayList<>();
+        tracks = new ArrayList<>();
     }
     // endregion
 
@@ -54,20 +54,20 @@ public class FavoritesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
         TrackViewHolder holder = (TrackViewHolder) viewHolder;
 
-        final RealmTrack track = mTracks.get(position);
+        final RealmTrack track = tracks.get(position);
 
         if (track != null) {
-            setUpArtWork(holder.mArtworkImageView, track);
-            setUpUsername(holder.mUsernameTextView, track);
-            setUpTitle(holder.mTitleTextView, track);
-            setUpDuration(holder.mDurationTextView, track);
-            setUpPlaybackCount(holder.mPlaybackCountTextView, track);
+            setUpArtWork(holder.artworkImageView, track);
+            setUpUsername(holder.usernameTextView, track);
+            setUpTitle(holder.titleTextView, track);
+            setUpDuration(holder.durationTextView, track);
+            setUpPlaybackCount(holder.playbackCountTextView, track);
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mOnItemClickListener != null) {
-                        mOnItemClickListener.onItemClick(position);
+                    if (onItemClickListener != null) {
+                        onItemClickListener.onItemClick(position);
                     }
                 }
             });
@@ -76,12 +76,12 @@ public class FavoritesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public int getItemCount() {
-        return mTracks.size();
+        return tracks.size();
     }
 
     // region Helper Methods
     public void add(int position, RealmTrack item) {
-        mTracks.add(position, item);
+        tracks.add(position, item);
         notifyItemInserted(position);
     }
 
@@ -92,16 +92,16 @@ public class FavoritesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     public void remove(int position) {
-        mTracks.remove(position);
+        tracks.remove(position);
         notifyItemRemoved(position);
     }
 
     public RealmTrack getItem(int position) {
-        return mTracks.get(position);
+        return tracks.get(position);
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        this.mOnItemClickListener = onItemClickListener;
+        this.onItemClickListener = onItemClickListener;
     }
 
     private void setUpArtWork(ImageView iv, RealmTrack track) {
@@ -176,15 +176,15 @@ public class FavoritesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     public static class TrackViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.artwork_iv)
-        ImageView mArtworkImageView;
+        ImageView artworkImageView;
         @Bind(R.id.username_tv)
-        TextView mUsernameTextView;
+        TextView usernameTextView;
         @Bind(R.id.title_tv)
-        TextView mTitleTextView;
+        TextView titleTextView;
         @Bind(R.id.duration_tv)
-        TextView mDurationTextView;
+        TextView durationTextView;
         @Bind(R.id.playback_count_tv)
-        TextView mPlaybackCountTextView;
+        TextView playbackCountTextView;
 
         public TrackViewHolder(View view) {
             super(view);

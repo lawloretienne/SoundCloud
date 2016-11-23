@@ -39,66 +39,68 @@ import timber.log.Timber;
 
 public class MediaPlayerActivity extends Activity {
 
-    // region Member Variables
+    // region Views
     @Bind(R.id.pause)
-    ImageButton mPauseImageButton;
+    ImageButton pauseImageButton;
     @Bind(R.id.play)
-    ImageButton mPlayImageButton;
+    ImageButton playImageButton;
     @Bind(R.id.artist_tv)
-    TextView mArtistTextView;
+    TextView artistTextView;
     @Bind(R.id.title_tv)
-    TextView mTitleTextView;
+    TextView titleTextView;
     @Bind(R.id.cover_image_iv)
-    ImageView mCoverImageImageView;
+    ImageView coverImageImageView;
     @Bind(R.id.sb)
-    SeekBar mSeekBar;
+    SeekBar seekBar;
     @Bind(R.id.total_time_tv)
-    TextView mTotalTimeTextView;
+    TextView totalTimeTextView;
     @Bind(R.id.current_time_tv)
-    TextView mCurrentTimeTextView;
+    TextView currentTimeTextView;
     @Bind(R.id.media_rl)
-    RelativeLayout mMediaRelativeLayout;
+    RelativeLayout mediaRelativeLayout;
     @Bind(R.id.pb)
-    ProgressBar mProgressBar;
+    ProgressBar progressBar;
+    // endregion
 
-    private MediaPlayer mMediaPlayer;
-    private String mArtist = "";
-    private String mTitle = "";
-    private String mCoverImage = "";
+    // region Member Variables
+    private MediaPlayer mediaPlayer;
+    private String artist = "";
+    private String title = "";
+    private String coverImage = "";
 
-    private static Handler mHandler = new Handler();
+    private static Handler handler = new Handler();
 
-    private final Runnable mRunnable = new Runnable() {
+    private final Runnable runnable = new Runnable() {
 
         @Override
         public void run() {
-            if (mMediaPlayer != null) {
+            if (mediaPlayer != null) {
 
                 //set max value
-                int mDuration = mMediaPlayer.getDuration();
-                mSeekBar.setMax(mDuration);
+                int mDuration = mediaPlayer.getDuration();
+                seekBar.setMax(mDuration);
 
                 //update total time text view
-                mTotalTimeTextView.setText(getTimeString(mDuration));
+                totalTimeTextView.setText(getTimeString(mDuration));
 
                 //set progress to current position
-                int mCurrentPosition = mMediaPlayer.getCurrentPosition();
-                mSeekBar.setProgress(mCurrentPosition);
+                int mCurrentPosition = mediaPlayer.getCurrentPosition();
+                seekBar.setProgress(mCurrentPosition);
 
                 //update current time text view
-                mCurrentTimeTextView.setText(getTimeString(mCurrentPosition));
+                currentTimeTextView.setText(getTimeString(mCurrentPosition));
 
                 //handle drag on seekbar
-                mSeekBar.setOnSeekBarChangeListener(mSeekBarChangeListener);
+                seekBar.setOnSeekBarChangeListener(mSeekBarChangeListener);
 
                 if (mCurrentPosition == mDuration) {
-                    mPauseImageButton.setVisibility(View.GONE);
-                    mPlayImageButton.setVisibility(View.VISIBLE);
+                    pauseImageButton.setVisibility(View.GONE);
+                    playImageButton.setVisibility(View.VISIBLE);
                 }
             }
 
             //repeat above code every second
-            mHandler.postDelayed(this, 10);
+            handler.postDelayed(this, 10);
         }
     };
     // endregion
@@ -118,33 +120,33 @@ public class MediaPlayerActivity extends Activity {
 
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            if (mMediaPlayer != null && fromUser) {
-                mMediaPlayer.seekTo(progress);
+            if (mediaPlayer != null && fromUser) {
+                mediaPlayer.seekTo(progress);
             }
         }
     };
 
-    private OnPreparedListener mMediaPlayerOnPreparedListener = new OnPreparedListener() {
+    private OnPreparedListener mediaPlayerOnPreparedListener = new OnPreparedListener() {
         public void onPrepared(final MediaPlayer mp) {
 
-            mProgressBar.setVisibility(View.GONE);
-            mMediaRelativeLayout.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+            mediaRelativeLayout.setVisibility(View.VISIBLE);
 
-            mArtistTextView.setText(mArtist);
-            mTitleTextView.setText(mTitle);
+            artistTextView.setText(artist);
+            titleTextView.setText(title);
 
             Picasso.with(getApplicationContext())
-                    .load(mCoverImage)
-                    .into(mCoverImageImageView);
+                    .load(coverImage)
+                    .into(coverImageImageView);
 
-            mPlayImageButton.setVisibility(View.GONE);
-            mPauseImageButton.setVisibility(View.VISIBLE);
+            playImageButton.setVisibility(View.GONE);
+            pauseImageButton.setVisibility(View.VISIBLE);
 
             //start media player
             mp.start();
 
             //update seekbar
-            mRunnable.run();
+            runnable.run();
         }
     };
     // endregion
@@ -161,25 +163,25 @@ public class MediaPlayerActivity extends Activity {
                 if (!TextUtils.isEmpty(audioFile)) {
 
                     // create a media player
-                    mMediaPlayer = new MediaPlayer();
+                    mediaPlayer = new MediaPlayer();
 
                     // try to load data and play
                     try {
 
                         // give data to mMediaPlayer
-                        mMediaPlayer.setDataSource(audioFile);
+                        mediaPlayer.setDataSource(audioFile);
                         // media player asynchronous preparation
-                        mMediaPlayer.prepareAsync();
+                        mediaPlayer.prepareAsync();
 
                         // execute this code at the end of asynchronous media player preparation
-                        mMediaPlayer.setOnPreparedListener(mMediaPlayerOnPreparedListener);
+                        mediaPlayer.setOnPreparedListener(mediaPlayerOnPreparedListener);
                     } catch (IOException e) {
                         finish();
 //                        Toast.makeText(MediaPlayerActivity.this, getString(R.string.file_not_found), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    mProgressBar.setVisibility(View.GONE);
-                    mMediaRelativeLayout.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                    mediaRelativeLayout.setVisibility(View.VISIBLE);
                 }
             }
         }
@@ -236,9 +238,9 @@ public class MediaPlayerActivity extends Activity {
         Intent intent = getIntent();
         if (intent != null) {
             streamUrl = intent.getStringExtra(SoundcloudConstants.AUDIO_STREAM_URL);
-            mArtist = intent.getStringExtra(SoundcloudConstants.AUDIO_ARTIST);
-            mTitle = intent.getStringExtra(SoundcloudConstants.AUDIO_TITLE);
-            mCoverImage = intent.getStringExtra(SoundcloudConstants.IMG_URL);
+            artist = intent.getStringExtra(SoundcloudConstants.AUDIO_ARTIST);
+            title = intent.getStringExtra(SoundcloudConstants.AUDIO_TITLE);
+            coverImage = intent.getStringExtra(SoundcloudConstants.IMG_URL);
         }
 
         Uri streamUri = Uri.parse(streamUrl);
@@ -250,26 +252,26 @@ public class MediaPlayerActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mHandler.removeCallbacks(mRunnable);
+        handler.removeCallbacks(runnable);
     }
     // endregion
 
     // region Helper Methods
     public void play(View view) {
-        mPlayImageButton.setVisibility(View.GONE);
-        mPauseImageButton.setVisibility(View.VISIBLE);
-        mMediaPlayer.start();
+        playImageButton.setVisibility(View.GONE);
+        pauseImageButton.setVisibility(View.VISIBLE);
+        mediaPlayer.start();
     }
 
     public void pause(View view) {
-        mPlayImageButton.setVisibility(View.VISIBLE);
-        mPauseImageButton.setVisibility(View.GONE);
-        mMediaPlayer.pause();
+        playImageButton.setVisibility(View.VISIBLE);
+        pauseImageButton.setVisibility(View.GONE);
+        mediaPlayer.pause();
     }
 
     public void stop(View view) {
-        mMediaPlayer.seekTo(0);
-        mMediaPlayer.pause();
+        mediaPlayer.seekTo(0);
+        mediaPlayer.pause();
     }
 
     public void seekForward(View view) {
@@ -277,14 +279,14 @@ public class MediaPlayerActivity extends Activity {
         int seekForwardTime = 5000;
 
         // get current song position
-        int currentPosition = mMediaPlayer.getCurrentPosition();
+        int currentPosition = mediaPlayer.getCurrentPosition();
         // check if seekForward time is lesser than song duration
-        if (currentPosition + seekForwardTime <= mMediaPlayer.getDuration()) {
+        if (currentPosition + seekForwardTime <= mediaPlayer.getDuration()) {
             // forward song
-            mMediaPlayer.seekTo(currentPosition + seekForwardTime);
+            mediaPlayer.seekTo(currentPosition + seekForwardTime);
         } else {
             // forward to end position
-            mMediaPlayer.seekTo(mMediaPlayer.getDuration());
+            mediaPlayer.seekTo(mediaPlayer.getDuration());
         }
     }
 
@@ -293,24 +295,24 @@ public class MediaPlayerActivity extends Activity {
         int seekBackwardTime = 5000;
 
         // get current song position
-        int currentPosition = mMediaPlayer.getCurrentPosition();
+        int currentPosition = mediaPlayer.getCurrentPosition();
         // check if seekBackward time is greater than 0 sec
         if (currentPosition - seekBackwardTime >= 0) {
             // forward song
-            mMediaPlayer.seekTo(currentPosition - seekBackwardTime);
+            mediaPlayer.seekTo(currentPosition - seekBackwardTime);
         } else {
             // backward to starting position
-            mMediaPlayer.seekTo(0);
+            mediaPlayer.seekTo(0);
         }
     }
 
     public void onBackPressed() {
         super.onBackPressed();
 
-        if (mMediaPlayer != null) {
-            mMediaPlayer.reset();
-            mMediaPlayer.release();
-            mMediaPlayer = null;
+        if (mediaPlayer != null) {
+            mediaPlayer.reset();
+            mediaPlayer.release();
+            mediaPlayer = null;
         }
         finish();
     }

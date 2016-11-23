@@ -15,34 +15,34 @@ import io.realm.RealmList;
 public class Account {
 
     // region Member Variables
-    private UserProfile mUserProfile;
-    private List<Track> mTracks;
+    private UserProfile userProfile;
+    private List<Track> tracks;
     // endregion
 
     // region Constructors
     public Account(UserProfile userProfile, List<Track> tracks) {
-        mUserProfile = userProfile;
-        mTracks = tracks;
+        this.userProfile = userProfile;
+        this.tracks = tracks;
     }
     // endregion
 
     // region Getters
     public UserProfile getUserProfile() {
-        return mUserProfile;
+        return userProfile;
     }
 
     public List<Track> getTracks() {
-        return mTracks;
+        return tracks;
     }
     // endregion
 
     // region Setters
     public void setUserProfile(UserProfile userProfile) {
-        this.mUserProfile = userProfile;
+        this.userProfile = userProfile;
     }
 
     public void setTracks(List<Track> tracks) {
-        this.mTracks = tracks;
+        this.tracks = tracks;
     }
     // endregion
 

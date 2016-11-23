@@ -19,9 +19,9 @@ public class SyncService extends Service {
 
     // region Static Variables
     // Storage for an instance of the sync adapter
-    private static AccountSyncAdapter sAccountSyncAdapter = null;
+    private static AccountSyncAdapter accountSyncAdapter = null;
     // Object to use as a thread-safe lock
-    private static final Object sSyncAdapterLock = new Object();
+    private static final Object syncAdapterLock = new Object();
     // endregion
 
     /*
@@ -34,9 +34,9 @@ public class SyncService extends Service {
          * Set the sync adapter as syncable
          * Disallow parallel syncs
          */
-        synchronized (sSyncAdapterLock) {
-            if (sAccountSyncAdapter == null) {
-                sAccountSyncAdapter = new AccountSyncAdapter(getApplicationContext(), true);
+        synchronized (syncAdapterLock) {
+            if (accountSyncAdapter == null) {
+                accountSyncAdapter = new AccountSyncAdapter(getApplicationContext(), true);
             }
         }
     }
@@ -53,6 +53,6 @@ public class SyncService extends Service {
          * in the base class code when the AccountSyncAdapter
          * constructors call super()
          */
-        return sAccountSyncAdapter.getSyncAdapterBinder();
+        return accountSyncAdapter.getSyncAdapterBinder();
     }
 }

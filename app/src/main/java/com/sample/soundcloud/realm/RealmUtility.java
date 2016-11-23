@@ -23,7 +23,7 @@ import io.realm.exceptions.RealmMigrationNeededException;
  */
 public class RealmUtility {
 
-    private static Realm mRealm;
+    private static Realm realm;
 
     public static RealmConfiguration getRealmConfiguration(Context context) {
 //        return new RealmConfiguration.Builder(context)
@@ -37,16 +37,16 @@ public class RealmUtility {
     public static RealmAccount getCachedAccount(){
         Context context = SoundcloudApplication.getInstance().getApplicationContext();
         try{
-            mRealm = Realm.getInstance(context);
+            realm = Realm.getInstance(context);
         } catch (RealmMigrationNeededException e) {
             Realm.deleteRealm(getRealmConfiguration(context));
-            mRealm = Realm.getInstance(context);
+            realm = Realm.getInstance(context);
         }
 
         RealmResults<RealmAccount> realmResults
-                = mRealm.where(RealmAccount.class).findAll();
+                = realm.where(RealmAccount.class).findAll();
 
-        mRealm.close();
+        realm.close();
 
         if(realmResults != null && realmResults.size() > 0){
             return realmResults.get(0);
@@ -58,16 +58,16 @@ public class RealmUtility {
     public static boolean isAccountCached() {
         Context context = SoundcloudApplication.getInstance().getApplicationContext();
         try{
-            mRealm = Realm.getInstance(context);
+            realm = Realm.getInstance(context);
         } catch (RealmMigrationNeededException e) {
             Realm.deleteRealm(getRealmConfiguration(context));
-            mRealm = Realm.getInstance(context);
+            realm = Realm.getInstance(context);
         }
         
         RealmResults<RealmAccount> realmResults
-                = mRealm.where(RealmAccount.class).findAll();
+                = realm.where(RealmAccount.class).findAll();
 
-        mRealm.close();
+        realm.close();
 
         if (realmResults != null && realmResults.size() > 0) {
             return true;
@@ -79,24 +79,24 @@ public class RealmUtility {
     public static void persistAccount(Account account) {
         Context context = SoundcloudApplication.getInstance().getApplicationContext();
         try{
-            mRealm = Realm.getInstance(context);
+            realm = Realm.getInstance(context);
         } catch (RealmMigrationNeededException e) {
             Realm.deleteRealm(getRealmConfiguration(context));
-            mRealm = Realm.getInstance(context);
+            realm = Realm.getInstance(context);
         }
 
         UserProfile userProfile = account.getUserProfile();
         List<Track> tracks = account.getTracks();
 
-        mRealm.beginTransaction();
+        realm.beginTransaction();
 
-        mRealm.clear(RealmAccount.class);
+        realm.clear(RealmAccount.class);
 
         RealmAccount realmAccount =
-                mRealm.createObject(RealmAccount.class);
+                realm.createObject(RealmAccount.class);
 
         RealmUserProfile realmUserProfile =
-                mRealm.createObject(RealmUserProfile.class);
+                realm.createObject(RealmUserProfile.class);
 
         realmUserProfile.setAvatarUrl(userProfile.getAvatarUrl());
         realmUserProfile.setCity(userProfile.getCity());
@@ -111,7 +111,7 @@ public class RealmUtility {
         RealmList<RealmTrack> realmTracks = new RealmList<>();
         for (Track track : tracks) {
             RealmTrack realmTrack
-                    = mRealm.createObject(RealmTrack.class);
+                    = realm.createObject(RealmTrack.class);
             realmTrack.setArtworkUrl(track.getArtworkUrl());
             realmTrack.setStreamUrl(track.getStreamUrl());
             realmTrack.setDuration(track.getDuration());
@@ -121,7 +121,7 @@ public class RealmUtility {
             realmTrack.setTitle(track.getTitle());
 
             RealmUserProfile realmUser
-                    = mRealm.createObject(RealmUserProfile.class);
+                    = realm.createObject(RealmUserProfile.class);
             realmUser.setUsername(track.getUser().getUsername());
             realmTrack.setUser(realmUser);
 
@@ -130,9 +130,9 @@ public class RealmUtility {
 
         realmAccount.setTracks(realmTracks);
 
-        mRealm.copyToRealm(realmAccount);
-        mRealm.commitTransaction();
+        realm.copyToRealm(realmAccount);
+        realm.commitTransaction();
 
-        mRealm.close();
+        realm.close();
     }
 }

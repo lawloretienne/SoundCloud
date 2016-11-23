@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
 
     // region Member Variables
     @Bind(R.id.toolbar)
-    Toolbar mToolbar;
+    Toolbar toolbar;
     // endregion
 
     // region Lifecycle Methods
@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        setSupportActionBar(mToolbar);
+        setSupportActionBar(toolbar);
 
         getSupportFragmentManager()
                 .beginTransaction()

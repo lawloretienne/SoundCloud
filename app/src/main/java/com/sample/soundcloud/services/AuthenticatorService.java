@@ -18,13 +18,13 @@ public class AuthenticatorService extends Service {
 
     // region Member Variables
     // Instance field that stores the authenticator object
-    private StubAuthenticator mAuthenticator;
+    private StubAuthenticator authenticator;
     // endregion
 
     @Override
     public void onCreate() {
         // Create a new authenticator object
-        mAuthenticator = new StubAuthenticator(this);
+        authenticator = new StubAuthenticator(this);
     }
 
     /*
@@ -33,6 +33,6 @@ public class AuthenticatorService extends Service {
      */
     @Override
     public IBinder onBind(Intent intent) {
-        return mAuthenticator.getIBinder();
+        return authenticator.getIBinder();
     }
 }

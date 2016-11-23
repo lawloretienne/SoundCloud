@@ -34,8 +34,8 @@ import timber.log.Timber;
 public class AccountSyncAdapter extends AbstractThreadedSyncAdapter {
 
     // region Member Variables
-    private Realm mRealm;
-    private Context mContext;
+    private Realm realm;
+    private Context context;
     // endregion
 
     // region Constructors
@@ -45,7 +45,7 @@ public class AccountSyncAdapter extends AbstractThreadedSyncAdapter {
     public AccountSyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
 
-        mContext = context;
+        this.context = context;
     }
 
     /**
@@ -59,7 +59,7 @@ public class AccountSyncAdapter extends AbstractThreadedSyncAdapter {
             boolean allowParallelSyncs) {
         super(context, autoInitialize, allowParallelSyncs);
 
-        mContext = context;
+        this.context = context;
     }
     // endregion
 
@@ -78,15 +78,15 @@ public class AccountSyncAdapter extends AbstractThreadedSyncAdapter {
 
         Context context = SoundcloudApplication.getInstance().getApplicationContext();
         try{
-            mRealm = Realm.getInstance(context);
+            realm = Realm.getInstance(context);
         } catch (RealmMigrationNeededException e) {
             Realm.deleteRealm(RealmUtility.getRealmConfiguration(context));
-            mRealm = Realm.getInstance(context);
+            realm = Realm.getInstance(context);
         }
 
         // Redownload account info
         loadAccount();
-        mRealm.close();
+        realm.close();
 
     }
 

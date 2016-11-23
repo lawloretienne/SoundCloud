@@ -14,11 +14,11 @@ import timber.log.Timber;
 public class SoundcloudApplication extends Application {
 
     // region Static Variables
-    private static SoundcloudApplication sCurrentApplication = null;
+    private static SoundcloudApplication currentApplication = null;
     // endregion
 
     // region Member Variables
-    private RefWatcher mRefWatcher;
+    private RefWatcher refWatcher;
     // endregion
 
     // region Callbacks
@@ -38,7 +38,7 @@ public class SoundcloudApplication extends Application {
 //        }
 
 
-        mRefWatcher = LeakCanary.install(this);
+        refWatcher = LeakCanary.install(this);
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
@@ -46,22 +46,22 @@ public class SoundcloudApplication extends Application {
             Timber.plant(new CrashReportingTree());
         }
 
-        sCurrentApplication = this;
+        currentApplication = this;
 
     }
 
     // region Helper Methods
     public static SoundcloudApplication getInstance() {
-        return sCurrentApplication;
+        return currentApplication;
     }
 
     public static File getCacheDirectory()  {
-        return sCurrentApplication.getCacheDir();
+        return currentApplication.getCacheDir();
     }
 
     public static RefWatcher getRefWatcher(Context context) {
         SoundcloudApplication application = (SoundcloudApplication) context.getApplicationContext();
-        return application.mRefWatcher;
+        return application.refWatcher;
     }
     // endregion
 
