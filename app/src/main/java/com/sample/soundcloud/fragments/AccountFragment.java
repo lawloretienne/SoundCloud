@@ -44,6 +44,7 @@ import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
@@ -85,10 +86,10 @@ public class AccountFragment extends Fragment implements // region Interfaces
     TextView trackCountTextView;
     @Bind(R.id.playlist_count_tv)
     TextView playlistCountTextView;
-    @Bind(R.id.favorites_rv)
-    RecyclerView favoritesRecyclerView;
+    @Bind(R.id.rv)
+    RecyclerView recyclerView;
     @Bind(android.R.id.empty)
-    View emptyView;
+    LinearLayout emptyLinearLayout;
     @Bind(R.id.account_ll)
     LinearLayout accountLinearLayout;
     @Bind(R.id.pb)
@@ -105,6 +106,14 @@ public class AccountFragment extends Fragment implements // region Interfaces
     // endregion
 
     // region Listeners
+    @OnClick(R.id.reload_btn)
+    public void onReloadButtonClicked() {
+        emptyLinearLayout.setVisibility(View.GONE);
+        errorLinearLayout.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+
+        loadAccount();
+    }
 
     private RealmChangeListener accountChangedListener = new RealmChangeListener() {
         @Override
@@ -200,12 +209,12 @@ public class AccountFragment extends Fragment implements // region Interfaces
         super.onViewCreated(view, savedInstanceState);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        favoritesRecyclerView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(layoutManager);
         favoritesAdapter = new FavoritesAdapter();
         favoritesAdapter.setOnItemClickListener(this);
-        favoritesRecyclerView.setItemAnimator(new SlideInUpAnimator());
+        recyclerView.setItemAnimator(new SlideInUpAnimator());
 
-        favoritesRecyclerView.setAdapter(favoritesAdapter);
+        recyclerView.setAdapter(favoritesAdapter);
 
         // TODO handle pagination
         //        mFavoritesRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -503,9 +512,11 @@ public class AccountFragment extends Fragment implements // region Interfaces
         favoritesAdapter.addAll(tracks);
 
         if (favoritesAdapter.isEmpty()) {
-            emptyView.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+            emptyLinearLayout.setVisibility(View.VISIBLE);
         } else {
-            emptyView.setVisibility(View.GONE);
+            emptyLinearLayout.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
         }
     }
 

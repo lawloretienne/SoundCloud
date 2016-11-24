@@ -4,4 +4,6 @@
     <string name="file_not_found">File not found</string>
     <string name="likes">Likes</string>
     <string name="no_liked_tracks">No Liked Tracks</string>
+    <string name="content_desc">Content Description</string>
+    <string name="reload">Reload</string>
 </resources>

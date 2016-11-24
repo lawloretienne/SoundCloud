@@ -16,6 +16,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -57,8 +58,8 @@ public class MediaPlayerActivity extends AppCompatActivity {
     TextView totalTimeTextView;
     @Bind(R.id.current_time_tv)
     TextView currentTimeTextView;
-    @Bind(R.id.media_rl)
-    RelativeLayout mediaRelativeLayout;
+    @Bind(R.id.media_fl)
+    FrameLayout mediaFrameLayout;
     @Bind(R.id.pb)
     ProgressBar progressBar;
     // endregion
@@ -131,7 +132,7 @@ public class MediaPlayerActivity extends AppCompatActivity {
         public void onPrepared(final MediaPlayer mp) {
 
             progressBar.setVisibility(View.GONE);
-            mediaRelativeLayout.setVisibility(View.VISIBLE);
+            mediaFrameLayout.setVisibility(View.VISIBLE);
 
             artistTextView.setText(artist);
             titleTextView.setText(title);
@@ -182,7 +183,7 @@ public class MediaPlayerActivity extends AppCompatActivity {
                     }
                 } else {
                     progressBar.setVisibility(View.GONE);
-                    mediaRelativeLayout.setVisibility(View.VISIBLE);
+                    mediaFrameLayout.setVisibility(View.VISIBLE);
                 }
             }
         }

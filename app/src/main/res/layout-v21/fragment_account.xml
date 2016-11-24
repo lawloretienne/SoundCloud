@@ -9,13 +9,13 @@
     <LinearLayout
         android:id="@+id/account_ll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:visibility="gone">
 
         <include layout="@layout/profile_layout" />
 
-        <RelativeLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:background="?colorPrimary"
@@ -23,44 +23,16 @@
 
             <include layout="@layout/tab_indicator" />
 
-        </RelativeLayout>
+        </FrameLayout>
 
-        <include layout="@layout/favorites_section" />
+        <include layout="@layout/content_layout" />
 
-    </LinearLayout>
-
-    <ProgressBar
-        android:id="@+id/pb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
-
-    <LinearLayout
-        android:id="@+id/error_ll"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone"
-        android:gravity="center_horizontal">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_error_view_cloud"
-            android:contentDescription=""/>
-
-        <com.sample.soundcloud.ui.CustomFontTextView
-            android:id="@+id/error_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/primary_text"
-            android:layout_margin="16dp"
-            tools:text="Can't load data.\nCheck your network connection."
-            android:textSize="16sp"
-            app:textFont="maven_pro_medium"/>
+        <include layout="@layout/tracks_empty_layout" />
 
     </LinearLayout>
+
+    <include layout="@layout/loading_layout" />
+
+    <include layout="@layout/error_layout" />
 
 </FrameLayout>

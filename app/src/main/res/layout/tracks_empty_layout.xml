@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@android:id/empty"
+    android:layout_width="288dp"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:visibility="gone">
+
+    <com.sample.soundcloud.ui.CustomFontTextView
+        android:id="@+id/empty_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:drawableTop="@drawable/ic_large_track_wrapped"
+        android:text="@string/no_liked_tracks"
+        android:textColor="@color/secondary_text"
+        android:textSize="20sp"
+        app:textFont="maven_pro_medium" />
+
+</LinearLayout>

@@ -12,7 +12,7 @@
         android:id="@+id/artwork_iv"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:background="?colorPrimary"
+        android:background="@color/grey_300"
         android:contentDescription=""/>
 
     <LinearLayout
@@ -22,7 +22,7 @@
         android:orientation="vertical"
         android:layout_marginLeft="@dimen/activity_horizontal_margin">
 
-        <RelativeLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -35,8 +35,6 @@
                 android:layout_marginRight="8dp"
                 android:singleLine="true"
                 android:textSize="14sp"
-                android:layout_alignParentLeft="true"
-                android:layout_toLeftOf="@+id/duration_tv"
                 tools:visibility="visible"
                 app:textFont="maven_pro_medium"/>
 
@@ -49,10 +47,10 @@
                 tools:text="5:53"
                 android:textSize="12sp"
                 tools:visibility="visible"
-                android:layout_alignParentRight="true"
+                android:layout_gravity="right"
                 app:textFont="maven_pro_medium"/>
 
-        </RelativeLayout>
+        </FrameLayout>
 
         <com.sample.soundcloud.ui.CustomFontTextView
             android:id="@+id/title_tv"
@@ -72,8 +70,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/secondary_text"
+            android:gravity="center_vertical"
             tools:text="1,345,234"
             android:layout_marginTop="4dp"
+            android:layout_marginLeft="-4dp"
             android:drawableLeft="@drawable/ic_play_wrapped"
             android:drawablePadding="4dp"
             android:textSize="12sp"

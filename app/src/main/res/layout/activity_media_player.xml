@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
 
-    <RelativeLayout
-        android:id="@+id/media_rl"
+    <FrameLayout
+        android:id="@+id/media_fl"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone">
@@ -51,7 +52,7 @@
             android:layout_height="80dp"
             android:background="@color/eighty_percent_transparency_black"
             android:orientation="vertical"
-            android:layout_alignParentBottom="true">
+            android:layout_gravity="bottom">
 
             <LinearLayout
                 android:id="@+id/controls"
@@ -115,50 +116,60 @@
 
         </LinearLayout>
 
-        <SeekBar
-            android:id="@+id/sb"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@null"
-            android:padding="0dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="64dp"/>
+            android:orientation="vertical"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="72dp">
 
-        <com.sample.soundcloud.ui.CustomFontTextView
-            android:id="@+id/current_time_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="16dp"
-            android:textColor="@color/inverse_primary_text"
-            app:textFont="maven_pro_medium"
-            android:layout_above="@id/sb"
-            android:shadowDy="1"
-            android:shadowDx="1"
-            android:shadowRadius="1"
-            android:shadowColor="@color/ninty_five_percent_transparency_black"/>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <com.sample.soundcloud.ui.CustomFontTextView
-            android:id="@+id/total_time_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingRight="16dp"
-            android:textColor="@color/inverse_primary_text"
-            app:textFont="maven_pro_medium"
-            android:layout_above="@id/sb"
-            android:layout_alignParentRight="true"
-            android:shadowDy="1"
-            android:shadowDx="1"
-            android:shadowRadius="1"
-            android:shadowColor="@color/ninty_five_percent_transparency_black"/>
+                <com.sample.soundcloud.ui.CustomFontTextView
+                    android:id="@+id/current_time_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="16dp"
+                    android:textColor="@color/inverse_primary_text"
+                    app:textFont="maven_pro_medium"
+                    android:shadowDy="1"
+                    android:shadowDx="1"
+                    android:shadowRadius="1"
+                    android:shadowColor="@color/ninty_five_percent_transparency_black"/>
 
-    </RelativeLayout>
+                <com.sample.soundcloud.ui.CustomFontTextView
+                    android:id="@+id/total_time_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="16dp"
+                    android:textColor="@color/inverse_primary_text"
+                    app:textFont="maven_pro_medium"
+                    android:layout_gravity="right"
+                    android:shadowDy="1"
+                    android:shadowDx="1"
+                    android:shadowRadius="1"
+                    android:shadowColor="@color/ninty_five_percent_transparency_black"/>
+
+            </FrameLayout>
+
+            <SeekBar
+                android:id="@+id/sb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:padding="0dp"/>
+
+        </LinearLayout>
+
+    </FrameLayout>
 
     <ProgressBar
         android:id="@+id/pb"
-        android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"/>
 
-</RelativeLayout>
+</FrameLayout>
 
