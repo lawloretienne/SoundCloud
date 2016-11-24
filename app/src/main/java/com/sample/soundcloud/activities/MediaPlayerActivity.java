@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import com.sample.soundcloud.R;
 import com.sample.soundcloud.SoundcloudConstants;
+import com.sample.soundcloud.fragments.AccountFragment;
 import com.sample.soundcloud.network.Api;
 import com.squareup.picasso.Picasso;
 
@@ -239,10 +240,13 @@ public class MediaPlayerActivity extends AppCompatActivity {
         // get data from main activity intent
         Intent intent = getIntent();
         if (intent != null) {
-            streamUrl = intent.getStringExtra(SoundcloudConstants.AUDIO_STREAM_URL);
-            artist = intent.getStringExtra(SoundcloudConstants.AUDIO_ARTIST);
-            title = intent.getStringExtra(SoundcloudConstants.AUDIO_TITLE);
-            coverImage = intent.getStringExtra(SoundcloudConstants.IMG_URL);
+            Bundle extras = intent.getExtras();
+            if(extras != null){
+                streamUrl = extras.getString(AccountFragment.AUDIO_STREAM_URL);
+                artist = extras.getString(AccountFragment.AUDIO_ARTIST);
+                title = extras.getString(AccountFragment.AUDIO_TITLE);
+                coverImage = extras.getString(AccountFragment.IMG_URL);
+            }
         }
 
         Uri streamUri = Uri.parse(streamUrl);

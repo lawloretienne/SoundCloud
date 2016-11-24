@@ -66,6 +66,12 @@ public class AccountFragment extends Fragment implements // region Interfaces
 {
 
     // region Constants
+    public static final String AUDIO_STREAM_URL = "AUDIO_STREAM_URL";
+    public static final String AUDIO_ARTIST = "AUDIO_ARTIST";
+    public static final String AUDIO_TITLE = "AUDIO_TITLE";
+    public static final String IMG_URL = "IMG_URL";
+    public static final int TEN_MINUTES = 600000;
+
     // The authority for the sync adapter's content provider
     private static final String AUTHORITY = "com.sample.soundcloud.provider";
     // An account type, in the form of a domain name
@@ -281,7 +287,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
         String streamUrl = track.getStreamUrl();
         long duration = track.getDuration();
 
-        if (duration < SoundcloudConstants.TEN_MINUTES) {
+        if (duration < TEN_MINUTES) {
             playInMediaPlayer(track, streamUrl);
         } else {
             playInBrowser(streamUrl);
@@ -535,10 +541,12 @@ public class AccountFragment extends Fragment implements // region Interfaces
         }
 
         Intent intent = new Intent(getActivity(), MediaPlayerActivity.class);
-        intent.putExtra(SoundcloudConstants.AUDIO_STREAM_URL, streamUrl);
-        intent.putExtra(SoundcloudConstants.AUDIO_ARTIST, artist);
-        intent.putExtra(SoundcloudConstants.AUDIO_TITLE, title);
-        intent.putExtra(SoundcloudConstants.IMG_URL, artworkUrl);
+        Bundle bundle = new Bundle();
+        bundle.putString(AUDIO_STREAM_URL, streamUrl);
+        bundle.putString(AUDIO_ARTIST, artist);
+        bundle.putString(AUDIO_TITLE, title);
+        bundle.putString(IMG_URL, artworkUrl);
+        intent.putExtras(bundle);
 
         startActivity(intent);
     }
