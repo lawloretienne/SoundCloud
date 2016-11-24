@@ -2,6 +2,7 @@ package com.sample.soundcloud;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.multidex.MultiDex;
 import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 
@@ -37,6 +38,12 @@ public class SoundcloudApplication extends Application {
         currentApplication = this;
     }
     // endregion
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 
     // region Helper Methods
     public static SoundcloudApplication getInstance() {

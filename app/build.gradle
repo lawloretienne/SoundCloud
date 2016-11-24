@@ -10,12 +10,43 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
+        // Enabling multidex support.
+        multiDexEnabled true
+//        multiDexKeepProguard file('multidex-keep.txt')
+        vectorDrawables.useSupportLibrary = true
+    }
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+    productFlavors {
+        // Define separate dev and prod product flavors.
+        dev {
+            // dev utilizes minSDKVersion = 21 to allow the Android gradle plugin
+            // to pre-dex each module and produce an APK that can be tested on
+            // Android Lollipop without time consuming dex merging processes.
+            minSdkVersion 21
+        }
+        prod {
+            // The actual minSdkVersion for the application.
+            minSdkVersion 19
+        }
     }
     buildTypes {
         release {
-            minifyEnabled false
+            debuggable false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles fileTree('proguard').asList().toArray()
         }
+        debug {
+            debuggable true
+            minifyEnabled false
+        }
+    }
+    lintOptions {
+        checkReleaseBuilds true
+        abortOnError false
     }
     packagingOptions {
         exclude 'META-INF/services/javax.annotation.processing.Processor'
@@ -45,6 +76,8 @@ dependencies {
 
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.jakewharton.timber:timber:4.3.0'
+
+    compile 'com.android.support:multidex:1.0.1'
 
     compile 'jp.wasabeef:recyclerview-animators:2.0.0'  // Latest version 2.2.3 is buggy
 }
