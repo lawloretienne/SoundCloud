@@ -19,20 +19,28 @@ import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 /**
  * Created by etiennelawlor on 3/21/15.
  */
 public class FavoritesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    // region Constants
+    private static final int HEADER = 0;
+    private static final int ITEM = 1;
+    private static final int LOADING = 2;
+    // endregion
+
     // region Member Variables
     private List<RealmTrack> tracks;
     private OnItemClickListener onItemClickListener;
+    private boolean isLoadingFooterAdded = false;
     // endregion
 
     // region Interfaces
     public interface OnItemClickListener {
-        void onItemClick(int position);
+        void onItemClick(int position, View view);
     }
     // endregion
 
@@ -44,15 +52,82 @@ public class FavoritesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // create a new view
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.track_row, parent, false);
+        RecyclerView.ViewHolder viewHolder = null;
 
-        return new TrackViewHolder(v);
+        switch (viewType) {
+            case HEADER:
+//                viewHolder = createHeaderViewHolder(parent);
+                break;
+            case ITEM:
+                viewHolder = createTrackViewHolder(parent);
+                break;
+            case LOADING:
+                viewHolder = createLoadingViewHolder(parent);
+                break;
+            default:
+                Timber.e("[ERR] type is not supported!!! type is %d", viewType);
+                break;
+        }
+
+        return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
-        TrackViewHolder holder = (TrackViewHolder) viewHolder;
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        switch (getItemViewType(position)) {
+            case HEADER:
+//                bindHeaderViewHolder(viewHolder);
+                break;
+            case ITEM:
+                bindTrackViewHolder(viewHolder, position);
+                break;
+            case LOADING:
+                bindLoadingViewHolder(viewHolder);
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return tracks.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return ITEM;
+    }
+
+    // region Helper Methods
+
+    private RecyclerView.ViewHolder createTrackViewHolder(ViewGroup parent) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.track_row, parent, false);
+
+        final TrackViewHolder holder = new TrackViewHolder(v);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int adapterPos = holder.getAdapterPosition();
+                if (adapterPos != RecyclerView.NO_POSITION) {
+                    if (onItemClickListener != null) {
+                        onItemClickListener.onItemClick(adapterPos, holder.itemView);
+                    }
+                }
+            }
+        });
+
+        return holder;
+    }
+
+    private RecyclerView.ViewHolder createLoadingViewHolder(ViewGroup parent) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.load_more, parent, false);
+
+        return new MoreViewHolder(v);
+    }
+
+    private void bindTrackViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        final TrackViewHolder holder = (TrackViewHolder) viewHolder;
 
         final RealmTrack track = tracks.get(position);
 
@@ -62,38 +137,58 @@ public class FavoritesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             setUpTitle(holder.titleTextView, track);
             setUpDuration(holder.durationTextView, track);
             setUpPlaybackCount(holder.playbackCountTextView, track);
-
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (onItemClickListener != null) {
-                        onItemClickListener.onItemClick(position);
-                    }
-                }
-            });
         }
     }
 
-    @Override
-    public int getItemCount() {
-        return tracks.size();
+    private void bindLoadingViewHolder(RecyclerView.ViewHolder viewHolder) {
+        MoreViewHolder holder = (MoreViewHolder) viewHolder;
     }
 
-    // region Helper Methods
-    public void add(int position, RealmTrack item) {
-        tracks.add(position, item);
-        notifyItemInserted(position);
+    public void add(RealmTrack item) {
+        tracks.add(item);
+        notifyItemInserted(tracks.size() - 1);
+    }
+
+    public void addAll(List<RealmTrack> realmTracks) {
+        for (RealmTrack realmTrack : realmTracks) {
+            add(realmTrack);
+        }
+    }
+
+    private void remove(RealmTrack item) {
+        int position = tracks.indexOf(item);
+        if (position > -1) {
+            tracks.remove(position);
+            notifyItemRemoved(position);
+        }
     }
 
     public void clear() {
+        isLoadingFooterAdded = false;
         while (getItemCount() > 0) {
-            remove(0);
+            remove(getItem(0));
         }
     }
 
-    public void remove(int position) {
-        tracks.remove(position);
-        notifyItemRemoved(position);
+    public boolean isEmpty() {
+        return getItemCount() == 0;
+    }
+
+    public void addLoading() {
+        isLoadingFooterAdded = true;
+        add(new RealmTrack());
+    }
+
+    public void removeLoading() {
+        isLoadingFooterAdded = false;
+
+        int position = tracks.size() - 1;
+        RealmTrack item = getItem(position);
+
+        if (item != null) {
+            tracks.remove(position);
+            notifyItemRemoved(position);
+        }
     }
 
     public RealmTrack getItem(int position) {
@@ -175,6 +270,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     // region Inner Classes
 
     public static class TrackViewHolder extends RecyclerView.ViewHolder {
+        // region Views
         @Bind(R.id.artwork_iv)
         ImageView artworkImageView;
         @Bind(R.id.username_tv)
@@ -185,11 +281,26 @@ public class FavoritesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         TextView durationTextView;
         @Bind(R.id.playback_count_tv)
         TextView playbackCountTextView;
+        // endregion
 
+        // region Constructors
         public TrackViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
         }
+        // endregion
+    }
+
+    public static class MoreViewHolder extends RecyclerView.ViewHolder {
+        // region Views
+        // endregion
+
+        // region Constructors
+        public MoreViewHolder(View view) {
+            super(view);
+            ButterKnife.bind(this, view);
+        }
+        // endregion
     }
 
     // endregion

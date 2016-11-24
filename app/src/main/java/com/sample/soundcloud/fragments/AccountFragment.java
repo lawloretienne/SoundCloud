@@ -52,6 +52,7 @@ import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmList;
 import io.realm.exceptions.RealmMigrationNeededException;
+import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import retrofit.RetrofitError;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -199,6 +200,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
         favoritesRecyclerView.setLayoutManager(layoutManager);
         favoritesAdapter = new FavoritesAdapter();
         favoritesAdapter.setOnItemClickListener(this);
+        favoritesRecyclerView.setItemAnimator(new SlideInUpAnimator());
 
         favoritesRecyclerView.setAdapter(favoritesAdapter);
 
@@ -261,7 +263,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
 
     // region FavoritesAdapter.OnItemClickListener Methods
     @Override
-    public void onItemClick(int position) {
+    public void onItemClick(int position, View view) {
         final RealmTrack track = favoritesAdapter.getItem(position);
 
         String streamUrl = track.getStreamUrl();
@@ -507,13 +509,9 @@ public class AccountFragment extends Fragment implements // region Interfaces
     private void setUpFavoriteTracks(RealmList<RealmTrack> tracks) {
         favoritesAdapter.clear();
 
-        if (tracks != null) {
-            for (RealmTrack track : tracks) {
-                favoritesAdapter.add(favoritesAdapter.getItemCount(), track);
-            }
-        }
+        favoritesAdapter.addAll(tracks);
 
-        if (favoritesAdapter.getItemCount() == 0) {
+        if (favoritesAdapter.isEmpty()) {
             emptyView.setVisibility(View.VISIBLE);
         } else {
             emptyView.setVisibility(View.GONE);

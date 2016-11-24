@@ -2,6 +2,7 @@ package com.sample.soundcloud;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 
 import com.squareup.leakcanary.LeakCanary;
@@ -13,6 +14,10 @@ import timber.log.Timber;
 
 public class SoundcloudApplication extends Application {
 
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
     // region Static Variables
     private static SoundcloudApplication currentApplication = null;
     // endregion
@@ -21,34 +26,17 @@ public class SoundcloudApplication extends Application {
     private RefWatcher refWatcher;
     // endregion
 
-    // region Callbacks
-    // endregion
-
+    // region Lifecycle Methods
     @Override
     public void onCreate() {
         super.onCreate();
 
-//        if (!Fabric.isInitialized()) {
-//            final Fabric fabric = new Fabric.Builder(this)
-//                    .kits(new Crashlytics())
-//                    .debuggable(true)
-//                    .build();
-//
-//            Fabric.with(fabric);
-//        }
-
-
-        refWatcher = LeakCanary.install(this);
-
-        if (BuildConfig.DEBUG) {
-            Timber.plant(new Timber.DebugTree());
-        } else {
-            Timber.plant(new CrashReportingTree());
-        }
+        initializeTimber();
+        initializeLeakCanary();
 
         currentApplication = this;
-
     }
+    // endregion
 
     // region Helper Methods
     public static SoundcloudApplication getInstance() {
@@ -63,19 +51,54 @@ public class SoundcloudApplication extends Application {
         SoundcloudApplication application = (SoundcloudApplication) context.getApplicationContext();
         return application.refWatcher;
     }
+
+    private void initializeTimber() {
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree() {
+                // Add the line number to the tag
+                @Override
+                protected String createStackElementTag(StackTraceElement element) {
+                    return super.createStackElementTag(element) + ":" + element.getLineNumber();
+                }
+            });
+        } else {
+            Timber.plant(new ReleaseTree());
+        }
+    }
+
+    private void initializeLeakCanary() {
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        refWatcher = LeakCanary.install(this);
+    }
     // endregion
 
     // region Inner Classes
 
-    /** A tree which logs important information for crash reporting. */
-    private static class CrashReportingTree extends Timber.Tree {
+    /**
+     * A tree which logs important information for crash reporting.
+     */
+    private static class ReleaseTree extends Timber.Tree {
+
+        private static final int MAX_LOG_LENGTH = 4000;
+
         @Override
-        protected void log(int priority, String tag, String message, Throwable t) {
+        protected boolean isLoggable(int priority) {
             if (priority == Log.VERBOSE || priority == Log.DEBUG) {
-                return;
+                return false;
             }
 
-//            FakeCrashLibrary.log(priority, tag, message);
+            // Only log WARN, INFO, ERROR, WTF
+            return true;
+        }
+
+        @Override
+        protected void log(int priority, String tag, String message, Throwable t) {
+            if (isLoggable(priority)) {
+                //            FakeCrashLibrary.log(priority, tag, message);
 //
 //            if (t != null) {
 //                if (priority == Log.ERROR) {
@@ -84,6 +107,48 @@ public class SoundcloudApplication extends Application {
 //                    FakeCrashLibrary.logWarning(t);
 //                }
 //            }
+
+
+//                if (!Fabric.isInitialized()) {
+//                    return;
+//                }
+//
+//                Crashlytics.log(priority, tag, message);
+//
+//                if (t != null) {
+//                    if (priority == Log.ERROR) {
+//                        Crashlytics.logException(t);
+//                    } else if (priority == Log.INFO) {
+//                        Crashlytics.log(message);
+//                    }
+//                }
+
+                // Message is short enough, does not need to be broken into chunks
+                if (message.length() < MAX_LOG_LENGTH) {
+                    if (priority == Log.ASSERT) {
+                        Log.wtf(tag, message);
+                    } else {
+                        Log.println(priority, tag, message);
+                    }
+                    return;
+                }
+
+                // Split by line, then ensure each line can fit into Log's maximum length
+                for (int i = 0, length = message.length(); i < length; i++) {
+                    int newline = message.indexOf('\n', i);
+                    newline = newline != -1 ? newline : length;
+                    do {
+                        int end = Math.min(newline, i + MAX_LOG_LENGTH);
+                        String part = message.substring(i, end);
+                        if (priority == Log.ASSERT) {
+                            Log.wtf(tag, part);
+                        } else {
+                            Log.println(priority, tag, part);
+                        }
+                        i = end;
+                    } while (i < newline);
+                }
+            }
         }
     }
 
