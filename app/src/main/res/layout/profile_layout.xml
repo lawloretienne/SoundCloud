@@ -8,11 +8,15 @@
     android:background="@color/grey_200"
     android:orientation="horizontal">
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/avatar_iv"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:contentDescription=""/>
+        android:layout_width="104dp"
+        android:layout_height="104dp"
+        android:foreground="@drawable/circle_ripple"
+        android:scaleType="centerCrop"
+        app:civ_border_color="@color/primary_light"
+        app:civ_border_width="8dp"
+        app:civ_fill_color="@color/primary" />
 
     <LinearLayout
         android:layout_width="match_parent"

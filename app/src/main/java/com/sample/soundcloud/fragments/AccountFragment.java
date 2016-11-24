@@ -17,7 +17,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -36,11 +35,8 @@ import com.sample.soundcloud.realm.RealmUtility;
 import com.sample.soundcloud.realm.models.RealmAccount;
 import com.sample.soundcloud.realm.models.RealmTrack;
 import com.sample.soundcloud.realm.models.RealmUserProfile;
-import com.sample.soundcloud.ui.CircleTransformation;
-import com.sample.soundcloud.utilities.SoundcloudUtility;
 import com.squareup.leakcanary.RefWatcher;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -48,6 +44,7 @@ import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmList;
@@ -77,7 +74,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
 
     // region Views
     @Bind(R.id.avatar_iv)
-    ImageView avatarImageView;
+    CircleImageView avatarImageView;
     @Bind(R.id.username_tv)
     TextView usernameTextView;
     @Bind(R.id.location_tv)
@@ -144,6 +141,12 @@ public class AccountFragment extends Fragment implements // region Interfaces
     // endregion
 
     // region Factory Methods
+    public static AccountFragment newInstance(Bundle extras) {
+        AccountFragment fragment = new AccountFragment();
+        fragment.setArguments(extras);
+        return fragment;
+    }
+
     public static AccountFragment newInstance() {
         AccountFragment fragment = new AccountFragment();
         Bundle args = new Bundle();
@@ -400,26 +403,14 @@ public class AccountFragment extends Fragment implements // region Interfaces
         }
     }
 
-    private void setUpAvatar(ImageView iv, RealmUserProfile userProfile) {
+    private void setUpAvatar(CircleImageView iv, RealmUserProfile userProfile) {
         String avatarUrl = userProfile.getAvatarUrl();
         if (!TextUtils.isEmpty(avatarUrl)) {
+            // https://i1.sndcdn.com/avatars-000028479557-aid19w-large.jpg
             avatarUrl = avatarUrl.replace("large.jpg", "t500x500.jpg");
-
-            Transformation roundedTransformation
-                    = new CircleTransformation(getResources().getColor(R.color.primary),
-                    getResources().getColor(R.color.primary));
-
-            int dimension = SoundcloudUtility.dp2px(getActivity(), 70);
-
-//                        https://i1.sndcdn.com/avatars-000028479557-aid19w-large.jpg
             Picasso.with(getActivity())
                     .load(avatarUrl)
-                    .transform(roundedTransformation)
-//                                .fit()
-                    .resize(dimension, dimension)
-                    .centerCrop()
-                            //                .placeholder(R.drawable.ic_placeholder)
-                            //                .error(R.drawable.ic_error)
+                    .placeholder(R.color.primary)
                     .into(iv);
         }
     }

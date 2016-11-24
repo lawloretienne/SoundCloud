@@ -13,7 +13,7 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-        <include layout="@layout/profile_rl" />
+        <include layout="@layout/profile_layout" />
 
         <RelativeLayout
             android:layout_width="match_parent"

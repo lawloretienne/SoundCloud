@@ -114,8 +114,11 @@
     0% — 00
     -->
 
+    <color name="primary_light">#ff7733</color>
     <color name="primary">#ff5500</color>
     <color name="primary_dark">#CC4400</color>
+
+
     <color name="accent">@color/debug_red</color>
     <color name="control_normal">@color/debug_red</color>
     <color name="control_highlight">#ff5500</color>
