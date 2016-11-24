@@ -38,7 +38,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_toLeftOf="@+id/duration_tv"
                 tools:visibility="visible"
-                app:textFont="Roboto_Regular"/>
+                app:textFont="maven_pro_medium"/>
 
 
             <com.sample.soundcloud.ui.CustomFontTextView
@@ -50,7 +50,7 @@
                 android:textSize="12sp"
                 tools:visibility="visible"
                 android:layout_alignParentRight="true"
-                app:textFont="Roboto_Regular"/>
+                app:textFont="maven_pro_medium"/>
 
         </RelativeLayout>
 
@@ -65,7 +65,7 @@
             android:layout_marginTop="4dp"
             android:textSize="12sp"
             tools:visibility="visible"
-            app:textFont="Roboto_Regular"/>
+            app:textFont="maven_pro_medium"/>
 
         <com.sample.soundcloud.ui.CustomFontTextView
             android:id="@+id/playback_count_tv"
@@ -78,7 +78,7 @@
             android:drawablePadding="4dp"
             android:textSize="12sp"
             tools:visibility="visible"
-            app:textFont="Roboto_Regular"/>
+            app:textFont="maven_pro_medium"/>
 
     </LinearLayout>
 

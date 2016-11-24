@@ -32,17 +32,17 @@
                 android:id="@+id/artist_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
+                android:textColor="@color/inverse_primary_text"
                 android:textSize="16sp"
-                app:textFont="Roboto_BoldItalic"/>
+                app:textFont="maven_pro_bold"/>
 
             <com.sample.soundcloud.ui.CustomFontTextView
                 android:id="@+id/title_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
+                android:textColor="@color/inverse_secondary_text"
                 android:textSize="16sp"
-                app:textFont="Roboto_Italic"/>
+                app:textFont="maven_pro_medium"/>
         </LinearLayout>
 
         <LinearLayout
@@ -129,8 +129,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="16dp"
-            android:textColor="@android:color/white"
-            app:textFont="Roboto_Regular"
+            android:textColor="@color/inverse_primary_text"
+            app:textFont="maven_pro_medium"
             android:layout_above="@id/sb"
             android:shadowDy="1"
             android:shadowDx="1"
@@ -142,8 +142,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="16dp"
-            android:textColor="@android:color/white"
-            app:textFont="Roboto_Regular"
+            android:textColor="@color/inverse_primary_text"
+            app:textFont="maven_pro_medium"
             android:layout_above="@id/sb"
             android:layout_alignParentRight="true"
             android:shadowDy="1"

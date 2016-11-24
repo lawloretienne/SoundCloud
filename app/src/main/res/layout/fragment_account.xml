@@ -70,7 +70,7 @@
             android:layout_margin="16dp"
             tools:text="Can't load data.\nCheck your network connection."
             android:textSize="16sp"
-            app:textFont="Roboto_Regular"/>
+            app:textFont="maven_pro_medium"/>
 
     </LinearLayout>
 

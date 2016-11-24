@@ -128,12 +128,21 @@
     <color name="debug_red">#ff0000</color>
     <color name="debug_blue">#0000ff</color>
 
+    <!-- Dark text on light backgrounds -->
     <color name="primary_text">#DE000000</color>
     <color name="secondary_text">#8A000000</color>
     <color name="tertiary_text">#61000000</color>
     <color name="hint_text">#61000000</color>
     <color name="disabled_text">#61000000</color>
     <color name="divider">#1F000000</color>
+
+    <!-- White text on dark backgrounds -->
+    <color name="inverse_primary_text">#FFFFFFFF</color>
+    <color name="inverse_secondary_text">#B3FFFFFF</color>
+    <color name="inverse_tertiary_text">#80FFFFFF</color>
+    <color name="inverse_hint_text">#80FFFFFF</color>
+    <color name="inverse_disabled_text">#80FFFFFF</color>
+
 
     <color name="five_percent_transparency_white">#0Dffffff</color>
     <color name="ten_percent_transparency_white">#1Affffff</color>

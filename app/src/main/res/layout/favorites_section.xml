@@ -28,7 +28,7 @@
             android:singleLine="true"
             android:gravity="center"
             android:layout_centerInParent="true"
-            app:textFont="Roboto_Regular"
+            app:textFont="maven_pro_medium"
             />
 
     </RelativeLayout>

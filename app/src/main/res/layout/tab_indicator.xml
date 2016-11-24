@@ -18,7 +18,7 @@
         android:textColor="@android:color/white"
         android:textSize="16sp"
         android:textAllCaps="false"
-        app:textFont="Roboto_Medium"
+        app:textFont="maven_pro_medium"
         />
 
     <View android:layout_height="4dp"
