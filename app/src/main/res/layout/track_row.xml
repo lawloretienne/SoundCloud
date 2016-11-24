@@ -74,7 +74,7 @@
             android:textColor="@color/secondary_text"
             tools:text="1,345,234"
             android:layout_marginTop="4dp"
-            android:drawableLeft="@drawable/ic_play"
+            android:drawableLeft="@drawable/ic_play_wrapped"
             android:drawablePadding="4dp"
             android:textSize="12sp"
             tools:visibility="visible"

@@ -11,6 +11,7 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
@@ -37,7 +38,7 @@ import retrofit.client.Response;
 import retrofit.mime.TypedInput;
 import timber.log.Timber;
 
-public class MediaPlayerActivity extends Activity {
+public class MediaPlayerActivity extends AppCompatActivity {
 
     // region Views
     @Bind(R.id.pause)

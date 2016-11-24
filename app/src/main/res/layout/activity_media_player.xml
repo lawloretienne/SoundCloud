@@ -70,7 +70,7 @@
                     android:background="?android:attr/selectableItemBackground"
                     android:onClick="seekBackward"
                     android:contentDescription=""
-                    android:src="@drawable/ic_action_rewind"/>
+                    app:srcCompat="@drawable/ic_action_fast_rewind"/>
 
                 <FrameLayout
                     android:layout_width="wrap_content"
@@ -85,7 +85,7 @@
                         android:layout_height="wrap_content"
                         android:background="?android:attr/selectableItemBackground"
                         android:onClick="pause"
-                        android:src="@drawable/ic_action_pause"
+                        app:srcCompat="@drawable/ic_action_pause"
                         android:contentDescription=""
                         android:visibility="gone" />
 
@@ -96,7 +96,7 @@
                         android:layout_height="wrap_content"
                         android:background="?android:attr/selectableItemBackground"
                         android:onClick="play"
-                        android:src="@drawable/ic_action_play"
+                        app:srcCompat="@drawable/ic_action_play"
                         android:contentDescription=""/>
 
                 </FrameLayout>
@@ -108,7 +108,7 @@
                     android:layout_height="wrap_content"
                     android:background="?android:attr/selectableItemBackground"
                     android:onClick="seekForward"
-                    android:src="@drawable/ic_action_fast_forward"
+                    app:srcCompat="@drawable/ic_action_fast_forward"
                     android:contentDescription="" />
 
             </LinearLayout>

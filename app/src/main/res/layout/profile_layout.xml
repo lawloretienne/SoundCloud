@@ -32,7 +32,7 @@
             tools:text="Armin Van Buuren"
             android:drawablePadding="8dp"
             android:textSize="14sp"
-            android:drawableLeft="@drawable/ic_username"
+            android:drawableLeft="@drawable/ic_username_wrapped"
             android:visibility="gone"
             tools:visibility="visible"
             app:textFont="maven_pro_medium"/>
@@ -46,7 +46,7 @@
             tools:text="Leiden, Netherlands"
             android:drawablePadding="8dp"
             android:textSize="14sp"
-            android:drawableLeft="@drawable/ic_location"
+            android:drawableLeft="@drawable/ic_location_wrapped"
             android:visibility="gone"
             tools:visibility="visible"
             app:textFont="maven_pro_medium"/>
@@ -60,7 +60,7 @@
             tools:text="1,345,234 followers"
             android:drawablePadding="8dp"
             android:textSize="14sp"
-            android:drawableLeft="@drawable/ic_followers"
+            android:drawableLeft="@drawable/ic_followers_wrapped"
             android:visibility="gone"
             tools:visibility="visible"
             app:textFont="maven_pro_medium"/>
@@ -74,7 +74,7 @@
             tools:text="34 tracks"
             android:drawablePadding="8dp"
             android:textSize="14sp"
-            android:drawableLeft="@drawable/ic_tracks"
+            android:drawableLeft="@drawable/ic_tracks_wrapped"
             android:visibility="gone"
             tools:visibility="visible"
             app:textFont="maven_pro_medium"/>
@@ -88,7 +88,7 @@
             tools:text="4 playlists"
             android:drawablePadding="8dp"
             android:textSize="14sp"
-            android:drawableLeft="@drawable/ic_playlists"
+            android:drawableLeft="@drawable/ic_playlists_wrapped"
             android:visibility="gone"
             tools:visibility="visible"
             app:textFont="maven_pro_medium"/>
