@@ -53,6 +53,7 @@ import io.realm.RealmList;
 import io.realm.exceptions.RealmMigrationNeededException;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 //import retrofit.RetrofitError;
+import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -373,45 +374,20 @@ public class AccountFragment extends Fragment implements // region Interfaces
                         @Override
                         public void call(Throwable throwable) {
                             Timber.e(throwable, "Soundcloud error");
+                            progressBar.setVisibility(View.GONE);
 
-//                            if (throwable instanceof RetrofitError) {
-//                                RetrofitError.Kind errorKind = ((RetrofitError) throwable).getKind();
-//
-//                                errorTextView.setText(getErrorMessage(errorKind));
-//                                Timber.e(throwable, "Soundcloud error : errorMessage - " + getErrorMessage(errorKind));
-//
-//                                progressBar.setVisibility(View.GONE);
-//                                if (accountLinearLayout.getVisibility() == View.GONE)
-//                                    errorLinearLayout.setVisibility(View.VISIBLE);
-//                            }
+                            if (throwable instanceof HttpException) {
+                                int responseCode = ((HttpException) throwable).code();
+                                if(responseCode == 504) { // 504 Unsatisfiable Request (only-if-cached)
+                                    errorTextView.setText("Can't load data.\nCheck your network connection.");
+                                    errorLinearLayout.setVisibility(View.VISIBLE);
+                                }
+                            }
                         }
                     });
         }
 
     }
-
-//    private String getErrorMessage(RetrofitError.Kind errorKind) {
-//        String errorMessage = "";
-//        switch (errorKind) {
-//            case NETWORK:
-////                                    errorMessage = "Network Error";
-//                errorMessage = "Can't load data.\nCheck your network connection.";
-//                break;
-//            case HTTP:
-//                errorMessage = "HTTP Error";
-//                break;
-//            case UNEXPECTED:
-//                errorMessage = "Unexpected Error";
-//                break;
-//            case CONVERSION:
-//                errorMessage = "Conversion Error";
-//                break;
-//            default:
-//                break;
-//        }
-//
-//        return errorMessage;
-//    }
 
     private void setUpUserProfile(RealmUserProfile userProfile) {
         if (userProfile != null) {

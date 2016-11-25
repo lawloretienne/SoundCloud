@@ -21,6 +21,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -41,6 +42,7 @@ import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import okhttp3.Headers;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -71,6 +73,10 @@ public class MediaPlayerActivity extends AppCompatActivity {
     FrameLayout mediaFrameLayout;
     @Bind(R.id.pb)
     ProgressBar progressBar;
+    @Bind(R.id.error_ll)
+    LinearLayout errorLinearLayout;
+    @Bind(R.id.error_tv)
+    TextView errorTextView;
     // endregion
 
     // region Member Variables
@@ -81,6 +87,7 @@ public class MediaPlayerActivity extends AppCompatActivity {
     private SoundCloudService soundCloudService;
     private List<Call> calls;
     private Typeface font;
+    private long trackId;
 
     private static Handler handler = new Handler();
 
@@ -120,6 +127,16 @@ public class MediaPlayerActivity extends AppCompatActivity {
     // endregion
 
     // region Listeners
+    @OnClick(R.id.reload_btn)
+    public void onReloadButtonClicked() {
+        errorLinearLayout.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+
+        Call getStreamInfoCall = soundCloudService.getStreamInfo(trackId);
+        calls.add(getStreamInfoCall);
+        getStreamInfoCall.enqueue(getStreamInfoCallback);
+    }
+
     private SeekBar.OnSeekBarChangeListener mSeekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
 
         @Override
@@ -174,14 +191,15 @@ public class MediaPlayerActivity extends AppCompatActivity {
         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
             progressBar.setVisibility(View.GONE);
 
-//            if (!response.isSuccessful()) {
-//                int responseCode = response.code();
-//                if(responseCode == 504) { // 504 Unsatisfiable Request (only-if-cached)
-//                    errorTextView.setText("Can't load data.\nCheck your network connection.");
-//                    errorLinearLayout.setVisibility(View.VISIBLE);
-//                }
-//                return;
-//            }
+            if (!response.isSuccessful()) {
+                int responseCode = response.code();
+                if(responseCode == 504) { // 504 Unsatisfiable Request (only-if-cached)
+                    errorTextView.setText("Can't load data.\nCheck your network connection.");
+                    errorLinearLayout.setVisibility(View.VISIBLE);
+
+                    return;
+                }
+            }
 
             if (!isFinishing()) {
 
@@ -286,7 +304,7 @@ public class MediaPlayerActivity extends AppCompatActivity {
         }
 
         Uri streamUri = Uri.parse(streamUrl);
-        long trackId = Long.valueOf(streamUri.getPathSegments().get(1));
+        trackId = Long.valueOf(streamUri.getPathSegments().get(1));
 
         calls = new ArrayList<>();
 

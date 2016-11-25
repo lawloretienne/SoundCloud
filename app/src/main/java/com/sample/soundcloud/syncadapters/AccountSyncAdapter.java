@@ -11,7 +11,11 @@ import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.SyncResult;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.util.Log;
+import android.view.View;
 
+import com.sample.soundcloud.R;
 import com.sample.soundcloud.SoundcloudApplication;
 import com.sample.soundcloud.SoundcloudConstants;
 import com.sample.soundcloud.network.ServiceGenerator;
@@ -20,11 +24,13 @@ import com.sample.soundcloud.network.models.Track;
 import com.sample.soundcloud.network.models.UserProfile;
 import com.sample.soundcloud.realm.RealmUtility;
 import com.sample.soundcloud.realm.models.RealmAccount;
+import com.sample.soundcloud.utilities.TrestleUtility;
 
 import java.util.List;
 
 import io.realm.Realm;
 import io.realm.exceptions.RealmMigrationNeededException;
+import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -84,6 +90,8 @@ public class AccountSyncAdapter extends AbstractThreadedSyncAdapter {
             ContentProviderClient contentProviderClient,
             SyncResult syncResult) {
 
+        Log.d("Soundcloud", "Soundcloud : onPerformSync() called with: account = [" + account + "], bundle = [" + bundle + "], s = [" + s + "], contentProviderClient = [" + contentProviderClient + "], syncResult = [" + syncResult + "]");
+
         Context context = SoundcloudApplication.getInstance().getApplicationContext();
         try{
             realm = Realm.getInstance(context);
@@ -130,42 +138,23 @@ public class AccountSyncAdapter extends AbstractThreadedSyncAdapter {
                     public void call(Throwable throwable) {
                         Timber.e(throwable, "Soundcloud error");
 
-//                            if (throwable instanceof RetrofitError) {
-//                                RetrofitError.Kind errorKind = ((RetrofitError) throwable).getKind();
-//
-//                                errorTextView.setText(getErrorMessage(errorKind));
-//                                Timber.e(throwable, "Soundcloud error : errorMessage - " + getErrorMessage(errorKind));
-//
-//                                progressBar.setVisibility(View.GONE);
-//                                if (accountLinearLayout.getVisibility() == View.GONE)
-//                                    errorLinearLayout.setVisibility(View.VISIBLE);
-//                            }
+                        if (throwable instanceof HttpException) {
+                            int responseCode = ((HttpException) throwable).code();
+                            if(responseCode == 504) { // 504 Unsatisfiable Request (only-if-cached)
+//                                errorTextView.setText("Can't load data.\nCheck your network connection.");
+//                                errorLinearLayout.setVisibility(View.VISIBLE);
+
+                                Timber.e("504 Unsatisfiable Request (only-if-cached)");
+
+//                                Snackbar.make(findViewById(R.id.main_content),
+//                                        TrestleUtility.getFormattedText("Network connection is unavailable.", font, 16),
+//                                        Snackbar.LENGTH_LONG)
+//                                        .show();
+                            }
+                        }
                     }
                 });
     }
-
-//    private String getErrorMessage(RetrofitError.Kind errorKind) {
-//        String errorMessage = "";
-//        switch (errorKind) {
-//            case NETWORK:
-////                                    errorMessage = "Network Error";
-//                errorMessage = "Can't load data.\nCheck your network connection.";
-//                break;
-//            case HTTP:
-//                errorMessage = "HTTP Error";
-//                break;
-//            case UNEXPECTED:
-//                errorMessage = "Unexpected Error";
-//                break;
-//            case CONVERSION:
-//                errorMessage = "Conversion Error";
-//                break;
-//            default:
-//                break;
-//        }
-//
-//        return errorMessage;
-//    }
 
     private void initService(){
         soundCloudService = ServiceGenerator.createService(

@@ -48,7 +48,7 @@ public class RealmUtility {
 
         realm.close();
 
-        if(realmResults != null && realmResults.size() > 0){
+        if(realmResults != null && realmResults.isValid() && realmResults.size() > 0){
             return realmResults.get(0);
         } else {
             return null;
