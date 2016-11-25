@@ -8,6 +8,8 @@ import com.sample.soundcloud.utilities.NetworkUtility;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
@@ -49,13 +51,17 @@ public class ServiceGenerator {
                 .addInterceptor(new Interceptor() {
                     @Override
                     public Response intercept(Chain chain) throws IOException {
-                        Request request = chain.request();
+                        Request originalRequest = chain.request();
 
                         // Add Cache Control only for GET methods
-                        if (request.method().equals("GET")) {
+                        if (originalRequest.method().equals("GET")) {
+                            Request modifiedRequest;
+
                             if (NetworkUtility.isNetworkAvailable(SoundcloudApplication.getInstance())) {
                                 int maxAge = 60;
-                                request = request.newBuilder().header("Cache-Control", "public, max-age=" + maxAge).build();
+                                Map<String, String> headersMap = new HashMap<>();
+                                headersMap.put("Cache-Control", "public, max-age=" + maxAge);
+                                modifiedRequest = updateHeaders(originalRequest, headersMap);
 
 //                                CacheControl cacheControl = new CacheControl.Builder()
 //                                        .maxAge(1, TimeUnit.MINUTES)
@@ -66,7 +72,9 @@ public class ServiceGenerator {
 //                                        .build();
                             } else {
                                 int maxStale = 60 * 60 * 24 * 7; // 1 week
-                                request = request.newBuilder().header("Cache-Control", "public, only-if-cached, max-stale=" + maxStale).build();
+                                Map<String, String> headersMap = new HashMap<>();
+                                headersMap.put("Cache-Control", "public, only-if-cached, max-stale=" + maxStale);
+                                modifiedRequest = updateHeaders(originalRequest, headersMap);
 
 //                                CacheControl cacheControl = new CacheControl.Builder()
 //                                        .onlyIfCached()
@@ -76,9 +84,12 @@ public class ServiceGenerator {
 //                                        .cacheControl(cacheControl)
 //                                        .build();
                             }
+
+                            return chain.proceed(modifiedRequest);
+                        } else {
+                            return chain.proceed(originalRequest);
                         }
 
-                        return chain.proceed(request);
                     }
                 })
                 .addNetworkInterceptor(new Interceptor() {
@@ -87,52 +98,11 @@ public class ServiceGenerator {
                         if (chain != null) {
                             Request originalRequest = chain.request();
 
-                            HttpUrl originalHttpUrl = originalRequest.url();
+                            Map<String, String> queryParamsMap = new HashMap<>();
+                            queryParamsMap.put("client_id", "309011f9713d22ace9b976909ed34a80");
+                            Request modifiedRequest = addQueryParams(originalRequest, queryParamsMap);
 
-                            HttpUrl url = originalHttpUrl.newBuilder()
-                                    .addQueryParameter("client_id", "309011f9713d22ace9b976909ed34a80")
-                                    .build();
-
-                            // Request customization: add request headers
-                            Request.Builder requestBuilder = originalRequest.newBuilder()
-                                    .url(url);
-
-                            Request request = requestBuilder.build();
-                            return chain.proceed(request);
-
-//                    if (!TextUtils.isEmpty(clientId) && !TextUtils.isEmpty(clientSecret)) {
-//                        // concatenate username and password with colon for authentication
-//                        final String credentials = clientId + ":" + clientSecret;
-//
-//                        String authorization = "Basic " + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
-//
-//                        Request modifiedRequest = originalRequest.newBuilder()
-//                                .header("Authorization", authorization)
-//                                .header("Accept", "application/json")
-//                                .build();
-//                        Timber.d("Authorization : "+ authorization);
-//
-//                        return chain.proceed(modifiedRequest);
-//                    } else {
-//                        return chain.proceed(originalRequest);
-//                    }
-
-//                            String sessionId = ClvbPrefs.getSessionId(ClvbApplication.getInstance());
-//
-//                            if (!TextUtils.isEmpty(sessionId)) {
-//
-//                                Request modifiedRequest = originalRequest.newBuilder()
-//                                        .header("Cookie", String.format("sessionid=%s", sessionId))
-////                                        .header("Accept", "application/json")
-//                                        .build();
-//                                Headers headers = modifiedRequest.headers();
-//                                Timber.d("Headers -> %s", headers.toString());
-//                                return chain.proceed(modifiedRequest);
-//                            } else {
-//                                return chain.proceed(originalRequest);
-//                            }
-
-//                            return chain.proceed(originalRequest);
+                            return chain.proceed(modifiedRequest);
                         }
 
                         return null;
@@ -163,16 +133,14 @@ public class ServiceGenerator {
                         if (chain != null) {
                             Request originalRequest = chain.request();
 
-//                            String sessionId = ClvbPrefs.getSessionId(ClvbApplication.getInstance());
-
                             if (!TextUtils.isEmpty(sessionId)) {
 
-                                Request modifiedRequest = originalRequest.newBuilder()
-                                        .header("Cookie", String.format("sessionid=%s", sessionId))
-//                                        .header("Accept", "application/json")
-                                        .build();
+                                Map<String, String> headersMap = new HashMap<>();
+                                headersMap.put("Cookie", String.format("sessionid=%s", sessionId));
+                                Request modifiedRequest = updateHeaders(originalRequest, headersMap);
                                 Headers headers = modifiedRequest.headers();
                                 Timber.d("Headers -> %s", headers.toString());
+
                                 return chain.proceed(modifiedRequest);
                             } else {
                                 return chain.proceed(originalRequest);
@@ -194,98 +162,56 @@ public class ServiceGenerator {
         return retrofit.create(serviceClass);
     }
 
-//    public static <S> S createService(Class<S> serviceClass, String baseUrl, final String clientId, final String clientSecret) {
-//
-//        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-//                .connectTimeout(10, TimeUnit.SECONDS)
-//                .readTimeout(10, TimeUnit.SECONDS)
-//                .writeTimeout(10, TimeUnit.SECONDS)
-//                .cache(getCache())
-//                .addNetworkInterceptor(new Interceptor() {
-//                    @Override
-//                    public Response intercept(Chain chain) throws IOException {
-//                        if (chain != null) {
-//                            Request originalRequest = chain.request();
-//
-//                            if (!TextUtils.isEmpty(clientId) && !TextUtils.isEmpty(clientSecret)) {
-//                                // concatenate username and password with colon for authentication
-//                                final String credentials = clientId + ":" + clientSecret;
-//
-//                                String authorization = "Basic " + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
-//
-//                                Request modifiedRequest = originalRequest.newBuilder()
-//                                        .header("Authorization", authorization)
-//                                        .header("Accept", "application/json")
-//                                        .build();
-//                                Timber.d("Authorization : "+ authorization);
-//
-//                                return chain.proceed(modifiedRequest);
-//                            } else {
-//                                return chain.proceed(originalRequest);
-//                            }
-//                        }
-//
-//                        return null;
-//                    }
-//                })
-//                .addInterceptor(getHttpLoggingInterceptor())
-//                .build();
-//
-//        retrofitBuilder.client(okHttpClient);
-//        retrofitBuilder.callFactory(okHttpClient);
-//        retrofitBuilder.baseUrl(baseUrl);
-//        retrofitBuilder.addConverterFactory(GsonConverterFactory.create());
-//
-//        Retrofit retrofit = retrofitBuilder.build();
-//        return retrofit.create(serviceClass);
-//    }
+//    HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
+//    if (BuildConfig.DEBUG) {
+//        httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+//    } else {
+//        httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.NONE);
+//    }        okHttpClient.interceptors().add(httpLoggingInterceptor); // Add only for debugging purposes
 
 
-//    public static <S> S createService(Class<S> serviceClass, String baseUrl, final AccessToken accessToken) {
-//        OkHttpClient okHttpClient = getClient();
-//        okHttpClient.setConnectTimeout(10, TimeUnit.SECONDS);
-//        okHttpClient.setReadTimeout(10, TimeUnit.SECONDS);
-//        okHttpClient.setWriteTimeout(10, TimeUnit.SECONDS);
-//
-//        okHttpClient.networkInterceptors().add(new Interceptor() {
-//            @Override
-//            public Response intercept(Chain chain) throws IOException {
-//                if(chain != null){
-//                    Request originalRequest = chain.request();
-//
-//                    if (accessToken != null) {
-//                        String authorization = accessToken.getTokenType() + " " + accessToken.getAccessToken();
-//
-//                        Request modifiedRequest = originalRequest.newBuilder()
-//                                .header("Authorization", authorization)
-//                                .header("Accept", "application/vnd.vimeo.*+json; version=3.2")
-//                                .build();
-//                        Timber.d("Authorization : "+ authorization);
-//
-//                        return chain.proceed(modifiedRequest);
-//                    } else {
-//                        return chain.proceed(originalRequest);
-//                    }
-//                }
-//
-//                return null;
-//            }
-//        });
-//
-//        HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
-//        if (BuildConfig.DEBUG) {
-//            httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-//        } else {
-//            httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.NONE);
-//        }        okHttpClient.interceptors().add(httpLoggingInterceptor); // Add only for debugging purposes
-//
-//        sRetrofitBuilder.client(okHttpClient);
-//        sRetrofitBuilder.baseUrl(baseUrl);
-//        sRetrofitBuilder.addConverterFactory(GsonConverterFactory.create());
-//
-//        Retrofit retrofit = sRetrofitBuilder.build();
-//        return retrofit.create(serviceClass);
-//    }
+
+//    Map<String, String> headersMap = new HashMap<>();
+//    final String credentials = clientId + ":" + clientSecret;
+//    String authorization = "Basic " + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
+//    headersMap.put("Authorization", authorization);
+//    headersMap.put("Accept", "application/json");
+
+
+//    Map<String, String> headersMap = new HashMap<>();
+//    String authorization = accessToken.getTokenType() + " " + accessToken.getAccessToken();
+//    headersMap.put("Authorization", authorization);
+//    headersMap.put("Accept", "application/vnd.vimeo.*+json; version=3.2");
+
+
+    private static Request addQueryParams(Request originalRequest, Map<String, String> queryParamsMap){
+        HttpUrl originalHttpUrl = originalRequest.url();
+        HttpUrl.Builder httpUrlBuilder = originalHttpUrl.newBuilder();
+
+        for (Map.Entry<String, String> entry : queryParamsMap.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            httpUrlBuilder.addQueryParameter(key, value);
+        }
+
+        HttpUrl httpUrl = httpUrlBuilder.build();
+        Request.Builder requestBuilder = originalRequest.newBuilder()
+                .url(httpUrl);
+
+        return requestBuilder.build();
+    }
+
+    private static Request updateHeaders(Request originalRequest, Map<String, String> headersMap){
+        Request.Builder requestBuilder = originalRequest.newBuilder();
+
+        for (Map.Entry<String, String> entry : headersMap.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            requestBuilder.header(key, value);
+        }
+
+        return requestBuilder.build();
+    }
 
     private static Cache getCache() {
 
