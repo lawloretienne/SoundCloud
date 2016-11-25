@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">SoundCloud</string>
-    <string name="loading">Loading...</string>
     <string name="file_not_found">File not found</string>
     <string name="likes">Likes</string>
     <string name="no_liked_tracks">No Liked Tracks</string>

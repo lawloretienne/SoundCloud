@@ -30,7 +30,6 @@ import com.sample.soundcloud.network.ServiceGenerator;
 import com.sample.soundcloud.network.SoundCloudService;
 import com.sample.soundcloud.network.models.Track;
 import com.sample.soundcloud.network.models.UserProfile;
-import com.sample.soundcloud.otto.BusProvider;
 import com.sample.soundcloud.realm.RealmUtility;
 import com.sample.soundcloud.realm.models.RealmAccount;
 import com.sample.soundcloud.realm.models.RealmTrack;
@@ -51,7 +50,6 @@ import io.realm.RealmChangeListener;
 import io.realm.RealmList;
 import io.realm.exceptions.RealmMigrationNeededException;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
-//import retrofit.RetrofitError;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -75,15 +73,15 @@ public class AccountFragment extends Fragment implements // region Interfaces
     //    public static final String USERNAME = "hardwell";
 //    public static final String USERNAME = "eric-oetting";
 //    public static final String USERNAME = "kaskade";
-//    public static final String USERNAME = "lawlorslaw";
+    public static final String USERNAME = "lawlorslaw";
 //    public static final String USERNAME = "calvinharris";
 //    public static final String USERNAME = "mallywobbles";
 //    public static final String USERNAME = "dillonfrancis";
 //    public static final String USERNAME = "zedd";
 //    public static final String USERNAME = "martingarrix";
-    public static final String USERNAME = "tiesto";
+//    public static final String USERNAME = "tiesto";
 
-    public static final int TEN_MINUTES = 600000;
+    private static final int TEN_MINUTES = 600000;
     public static final int PAGE_LIMIT = 5;
 
     // The authority for the sync adapter's content provider
@@ -191,8 +189,6 @@ public class AccountFragment extends Fragment implements // region Interfaces
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        BusProvider.getInstance().register(this);
-
         Context context = SoundcloudApplication.getInstance().getApplicationContext();
         try {
             realm = Realm.getInstance(context);
@@ -270,16 +266,6 @@ public class AccountFragment extends Fragment implements // region Interfaces
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
@@ -313,30 +299,6 @@ public class AccountFragment extends Fragment implements // region Interfaces
         }
     }
 
-    // endregion
-
-    // region Otto Methods
-//    @Subscribe
-//    public void onNetworkConnected(NetworkConnectedEvent event) {
-//        Timber.d("Soundcloud : onNetworkConnected()");
-//
-//        if(mErrorLinearLayout.getVisibility() == View.VISIBLE){
-//            mErrorLinearLayout.setVisibility(View.GONE);
-//            mProgressBar.setVisibility(View.VISIBLE);
-//        }
-//
-//        loadAccount();
-//
-//    }
-//
-//    @Subscribe
-//    public void onNetworkDisconnected(NetworkConnectedEvent event) {
-//        Timber.d("Soundcloud : onNetworkDisconnected()");
-//
-////        if(mAccountLinearLayout.getVisibility() == View.VISIBLE){
-////            Toast.makeText(getActivity(), "Network Disconnected", Toast.LENGTH_SHORT).show();
-////        }
-//    }
     // endregion
 
     // region Helper Methods
@@ -427,10 +389,10 @@ public class AccountFragment extends Fragment implements // region Interfaces
     private void setUpUsername(TextView tv, RealmUserProfile userProfile) {
         String userName = userProfile.getUsername();
         if (!TextUtils.isEmpty(userName)) {
-            usernameTextView.setText(userName);
-            usernameTextView.setVisibility(View.VISIBLE);
+            tv.setText(userName);
+            tv.setVisibility(View.VISIBLE);
         } else {
-            usernameTextView.setVisibility(View.GONE);
+            tv.setVisibility(View.GONE);
         }
     }
 

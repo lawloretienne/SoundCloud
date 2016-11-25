@@ -47,17 +47,6 @@
             android:exported="false"
             android:syncable="true"/>
 
-        <!-- Receivers -->
-        <receiver
-            android:name=".receivers.NetworkStateChangedReceiver"
-            android:enabled="true"
-            android:exported="false">
-
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </receiver>
-
         <!-- Services -->
 
         <service

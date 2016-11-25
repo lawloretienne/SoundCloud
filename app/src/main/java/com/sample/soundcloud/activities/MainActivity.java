@@ -22,8 +22,6 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     // endregion
 
-    // region Member Variables
-    private Typeface font;
     // endregion
 
     // region Lifecycle Methods
@@ -34,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        font = FontCache.getTypeface("MavenPro-Medium.ttf", this);
+        Typeface font = FontCache.getTypeface("MavenPro-Medium.ttf", this);
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();

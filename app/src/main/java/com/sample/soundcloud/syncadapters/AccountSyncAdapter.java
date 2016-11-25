@@ -40,8 +40,6 @@ import timber.log.Timber;
  */
 public class AccountSyncAdapter extends AbstractThreadedSyncAdapter {
 
-    // region Member Variables
-    private Realm realm;
     private Context context;
     private SoundCloudService soundCloudService;
     // endregion
@@ -89,6 +87,7 @@ public class AccountSyncAdapter extends AbstractThreadedSyncAdapter {
         Log.d("Soundcloud", "Soundcloud : onPerformSync() called with: account = [" + account + "], bundle = [" + bundle + "], s = [" + s + "], contentProviderClient = [" + contentProviderClient + "], syncResult = [" + syncResult + "]");
 
         Context context = SoundcloudApplication.getInstance().getApplicationContext();
+        Realm realm;
         try{
             realm = Realm.getInstance(context);
         } catch (RealmMigrationNeededException e) {
