@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:contentAuthority="com.sample.soundcloud.provider"
     android:accountType="com.sample.soundcloud"
-    android:userVisible="false"
+    android:userVisible="true"
     android:supportsUploading="false"
     android:allowParallelSyncs="false"
     android:isAlwaysSyncable="true"/>

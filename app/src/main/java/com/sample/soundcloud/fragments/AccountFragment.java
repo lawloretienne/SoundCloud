@@ -27,7 +27,8 @@ import com.sample.soundcloud.SoundcloudConstants;
 import com.sample.soundcloud.activities.MediaPlayerActivity;
 import com.sample.soundcloud.adapters.FavoritesAdapter;
 import com.sample.soundcloud.models.Account;
-import com.sample.soundcloud.network.Api;
+import com.sample.soundcloud.network.ServiceGenerator;
+import com.sample.soundcloud.network.SoundCloudService;
 import com.sample.soundcloud.network.models.Track;
 import com.sample.soundcloud.network.models.UserProfile;
 import com.sample.soundcloud.otto.BusProvider;
@@ -51,7 +52,7 @@ import io.realm.RealmChangeListener;
 import io.realm.RealmList;
 import io.realm.exceptions.RealmMigrationNeededException;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
-import retrofit.RetrofitError;
+//import retrofit.RetrofitError;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -109,6 +110,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
     // region Member Variables
     private FavoritesAdapter favoritesAdapter;
     private Realm realm;
+    private SoundCloudService soundCloudService;
     // endregion
 
     // region Listeners
@@ -187,6 +189,10 @@ public class AccountFragment extends Fragment implements // region Interfaces
         }
 
         realm.addChangeListener(accountChangedListener);
+
+        soundCloudService = ServiceGenerator.createService(
+                SoundCloudService.class,
+                SoundCloudService.BASE_URL);
 
         // Create account, if needed
         android.accounts.Account androidAccount = createSyncAccount(getActivity());
@@ -346,8 +352,8 @@ public class AccountFragment extends Fragment implements // region Interfaces
             // Account is not cached
 
             Observable.combineLatest(
-                    Api.getService(Api.getEndpointUrl()).getUserProfile(SoundcloudConstants.USERNAME),
-                    Api.getService(Api.getEndpointUrl()).getFavoriteTracks(SoundcloudConstants.USERNAME),
+                    soundCloudService.getUserProfile(SoundcloudConstants.USERNAME),
+                    soundCloudService.getFavoriteTracks(SoundcloudConstants.USERNAME),
                     new Func2<UserProfile, List<Track>, Account>() {
                         @Override
                         public Account call(UserProfile userProfile, List<Track> tracks) {
@@ -368,44 +374,44 @@ public class AccountFragment extends Fragment implements // region Interfaces
                         public void call(Throwable throwable) {
                             Timber.e(throwable, "Soundcloud error");
 
-                            if (throwable instanceof RetrofitError) {
-                                RetrofitError.Kind errorKind = ((RetrofitError) throwable).getKind();
-
-                                errorTextView.setText(getErrorMessage(errorKind));
-                                Timber.e(throwable, "Soundcloud error : errorMessage - " + getErrorMessage(errorKind));
-
-                                progressBar.setVisibility(View.GONE);
-                                if (accountLinearLayout.getVisibility() == View.GONE)
-                                    errorLinearLayout.setVisibility(View.VISIBLE);
-                            }
+//                            if (throwable instanceof RetrofitError) {
+//                                RetrofitError.Kind errorKind = ((RetrofitError) throwable).getKind();
+//
+//                                errorTextView.setText(getErrorMessage(errorKind));
+//                                Timber.e(throwable, "Soundcloud error : errorMessage - " + getErrorMessage(errorKind));
+//
+//                                progressBar.setVisibility(View.GONE);
+//                                if (accountLinearLayout.getVisibility() == View.GONE)
+//                                    errorLinearLayout.setVisibility(View.VISIBLE);
+//                            }
                         }
                     });
         }
 
     }
 
-    private String getErrorMessage(RetrofitError.Kind errorKind) {
-        String errorMessage = "";
-        switch (errorKind) {
-            case NETWORK:
-//                                    errorMessage = "Network Error";
-                errorMessage = "Can't load data.\nCheck your network connection.";
-                break;
-            case HTTP:
-                errorMessage = "HTTP Error";
-                break;
-            case UNEXPECTED:
-                errorMessage = "Unexpected Error";
-                break;
-            case CONVERSION:
-                errorMessage = "Conversion Error";
-                break;
-            default:
-                break;
-        }
-
-        return errorMessage;
-    }
+//    private String getErrorMessage(RetrofitError.Kind errorKind) {
+//        String errorMessage = "";
+//        switch (errorKind) {
+//            case NETWORK:
+////                                    errorMessage = "Network Error";
+//                errorMessage = "Can't load data.\nCheck your network connection.";
+//                break;
+//            case HTTP:
+//                errorMessage = "HTTP Error";
+//                break;
+//            case UNEXPECTED:
+//                errorMessage = "Unexpected Error";
+//                break;
+//            case CONVERSION:
+//                errorMessage = "Conversion Error";
+//                break;
+//            default:
+//                break;
+//        }
+//
+//        return errorMessage;
+//    }
 
     private void setUpUserProfile(RealmUserProfile userProfile) {
         if (userProfile != null) {
@@ -572,25 +578,26 @@ public class AccountFragment extends Fragment implements // region Interfaces
         AccountManager accountManager =
                 (AccountManager) context.getSystemService(
                         Context.ACCOUNT_SERVICE);
+
         /*
          * Add the account and account type, no password or user data
          * If successful, return the Account object, otherwise report an error.
          */
         if (accountManager.addAccountExplicitly(newAccount, null, null)) {
-            /*
-             * If you don't set android:syncable="true" in
-             * in your <provider> element in the manifest,
-             * then call context.setIsSyncable(account, AUTHORITY, 1)
-             * here.
-             */
+        /*
+         * If you don't set android:syncable="true" in
+         * in your <provider> element in the manifest,
+         * then call context.setIsSyncable(account, AUTHORITY, 1)
+         * here.
+         */
 
             Timber.d("Soundcloud : createSyncAccount() : success");
 
         } else {
-            /*
-             * The account exists or some other error occurred. Log this, report it,
-             * or handle it internally.
-             */
+        /*
+         * The account exists or some other error occurred. Log this, report it,
+         * or handle it internally.
+         */
             Timber.d("Soundcloud : createSyncAccount() : failure");
 
         }

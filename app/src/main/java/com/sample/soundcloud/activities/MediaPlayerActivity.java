@@ -4,13 +4,15 @@ package com.sample.soundcloud.activities;
  * Created by etiennelawlor on 5/7/15.
  */
 
-import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.NetworkOnMainThreadException;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
@@ -20,24 +22,30 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.sample.soundcloud.R;
-import com.sample.soundcloud.SoundcloudConstants;
 import com.sample.soundcloud.fragments.AccountFragment;
-import com.sample.soundcloud.network.Api;
+import com.sample.soundcloud.network.ServiceGenerator;
+import com.sample.soundcloud.network.SoundCloudService;
+import com.sample.soundcloud.utilities.FontCache;
+import com.sample.soundcloud.utilities.NetworkLogUtility;
+import com.sample.soundcloud.utilities.TrestleUtility;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-import retrofit.mime.TypedInput;
+import okhttp3.Headers;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import timber.log.Timber;
 
 public class MediaPlayerActivity extends AppCompatActivity {
@@ -70,6 +78,9 @@ public class MediaPlayerActivity extends AppCompatActivity {
     private String artist = "";
     private String title = "";
     private String coverImage = "";
+    private SoundCloudService soundCloudService;
+    private List<Call> calls;
+    private Typeface font;
 
     private static Handler handler = new Handler();
 
@@ -138,9 +149,11 @@ public class MediaPlayerActivity extends AppCompatActivity {
             artistTextView.setText(artist);
             titleTextView.setText(title);
 
-            Picasso.with(getApplicationContext())
-                    .load(coverImage)
-                    .into(coverImageImageView);
+            if(!TextUtils.isEmpty(coverImage)){
+                Picasso.with(getApplicationContext())
+                        .load(coverImage)
+                        .into(coverImageImageView);
+            }
 
             playImageButton.setVisibility(View.GONE);
             pauseImageButton.setVisibility(View.VISIBLE);
@@ -155,15 +168,30 @@ public class MediaPlayerActivity extends AppCompatActivity {
     // endregion
 
     // region Callbacks
-    private Callback<Response> mGetStreamInfoCallback = new Callback<Response>() {
+
+    private Callback<ResponseBody> getStreamInfoCallback = new Callback<ResponseBody>() {
         @Override
-        public void success(Response response, Response response2) {
+        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            progressBar.setVisibility(View.GONE);
+
+//            if (!response.isSuccessful()) {
+//                int responseCode = response.code();
+//                if(responseCode == 504) { // 504 Unsatisfiable Request (only-if-cached)
+//                    errorTextView.setText("Can't load data.\nCheck your network connection.");
+//                    errorLinearLayout.setVisibility(View.VISIBLE);
+//                }
+//                return;
+//            }
 
             if (!isFinishing()) {
 
-                String audioFile = response.getUrl();
+                String audioFile = response.raw().networkResponse().request().url().toString();
 
                 if (!TextUtils.isEmpty(audioFile)) {
+
+                    audioFile = getUpdatedAudioFile(audioFile);
+
+                    Timber.d("Audiofile - "+audioFile);
 
                     // create a media player
                     mediaPlayer = new MediaPlayer();
@@ -173,11 +201,19 @@ public class MediaPlayerActivity extends AppCompatActivity {
 
                         // give data to mMediaPlayer
                         mediaPlayer.setDataSource(audioFile);
+
+                        mediaPlayer.setOnPreparedListener(mediaPlayerOnPreparedListener);
+
                         // media player asynchronous preparation
                         mediaPlayer.prepareAsync();
 
                         // execute this code at the end of asynchronous media player preparation
-                        mediaPlayer.setOnPreparedListener(mediaPlayerOnPreparedListener);
+                        mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                            @Override
+                            public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
+                                return false;
+                            }
+                        });
                     } catch (IOException e) {
                         finish();
 //                        Toast.makeText(MediaPlayerActivity.this, getString(R.string.file_not_found), Toast.LENGTH_SHORT).show();
@@ -187,37 +223,35 @@ public class MediaPlayerActivity extends AppCompatActivity {
                     mediaFrameLayout.setVisibility(View.VISIBLE);
                 }
             }
+
+            okhttp3.Response rawResponse = response.raw();
+            if(rawResponse != null){
+                Headers headers = rawResponse.headers();
+                if(headers != null){
+                    String[] strings = headers.toString().split("\n");
+                    for(String string : strings){
+                        if(string.equals("Warning: 110 HttpURLConnection \"Response is stale\"")){
+                            Snackbar.make(findViewById(R.id.main_content),
+                                    TrestleUtility.getFormattedText("Network connection is unavailable.", font, 16),
+                                    Snackbar.LENGTH_LONG)
+                                    .show();
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         @Override
-        public void failure(RetrofitError error) {
-            Timber.d("failure()");
+        public void onFailure(Call<ResponseBody> call, Throwable t) {
+            NetworkLogUtility.logFailure(call, t);
 
-            if(error != null){
-                Response response = error.getResponse();
-                if(response != null){
-                    String reason = response.getReason();
-                    Timber.d("failure() : reason -"+reason);
+            progressBar.setVisibility(View.GONE);
 
-                    TypedInput body = response.getBody();
-                    if(body != null){
-                        Timber.d("failure() : body.toString() -"+body.toString());
-                    }
-
-                    int status = response.getStatus();
-                    Timber.d("failure() : status -"+status);
-                }
-
-                Throwable cause = error.getCause();
-                if(cause != null){
-                    Timber.d("failure() : cause.toString() -"+cause.toString());
-                }
-
-                Object body = error.getBody();
-                if(body != null){
-                    Timber.d("failure() : body.toString() -"+body.toString());
-                }
-            }
+//            if(t instanceof ConnectException){
+//                errorTextView.setText("Can't load data.\nCheck your network connection.");
+//                errorLinearLayout.setVisibility(View.VISIBLE);
+//            }
         }
     };
     // endregion
@@ -234,6 +268,8 @@ public class MediaPlayerActivity extends AppCompatActivity {
         // inflate layout
         setContentView(R.layout.activity_media_player);
         ButterKnife.bind(this);
+
+        font = FontCache.getTypeface("MavenPro-Medium.ttf", this);
 
         String streamUrl = "";
 
@@ -252,13 +288,36 @@ public class MediaPlayerActivity extends AppCompatActivity {
         Uri streamUri = Uri.parse(streamUrl);
         long trackId = Long.valueOf(streamUri.getPathSegments().get(1));
 
-        Api.getService(Api.getEndpointUrl()).getStreamInfo(trackId, mGetStreamInfoCallback);
+        calls = new ArrayList<>();
+
+        soundCloudService = ServiceGenerator.createService(
+                SoundCloudService.class,
+                SoundCloudService.BASE_URL);
+
+        Call getStreamInfoCall = soundCloudService.getStreamInfo(trackId);
+        calls.add(getStreamInfoCall);
+        getStreamInfoCall.enqueue(getStreamInfoCallback);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         handler.removeCallbacks(runnable);
+
+        Timber.d("onDestroy() : calls.size() - " + calls.size());
+
+        for (final Call call : calls) {
+            Timber.d("onDestroy() : call.cancel() - " + call.toString());
+
+            try {
+                call.cancel();
+            } catch (NetworkOnMainThreadException e) {
+                Timber.d("onDestroy() : NetworkOnMainThreadException thrown");
+                e.printStackTrace();
+            }
+        }
+
+        calls.clear();
     }
     // endregion
 
@@ -346,6 +405,25 @@ public class MediaPlayerActivity extends AppCompatActivity {
         builder.append(String.format("%02d", seconds));
 
         return builder.toString();
+    }
+
+    private String getUpdatedAudioFile(String aFile){
+//        String audioFile = "";
+        Uri audioUri = Uri.parse(aFile);
+        String scheme = audioUri.getScheme();
+        String host = audioUri.getHost();
+        String encodedPath = audioUri.getEncodedPath();
+
+        String queryString = "?";
+        Set<String> queryParameterNames = audioUri.getQueryParameterNames();
+        for (String s : queryParameterNames) {
+            if(!(s.equals("client_id"))){
+                String queryParam = audioUri.getQueryParameter(s);
+                queryString += String.format("%s=%s&", s, queryParam);
+            }
+        }
+
+        return String.format("%s://%s%s%s", scheme, host, encodedPath, queryString.substring(0, queryString.length()-1));
     }
     // endregion
 }
