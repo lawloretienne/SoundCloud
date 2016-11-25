@@ -23,7 +23,6 @@ import android.widget.TextView;
 
 import com.sample.soundcloud.R;
 import com.sample.soundcloud.SoundcloudApplication;
-import com.sample.soundcloud.SoundcloudConstants;
 import com.sample.soundcloud.activities.MediaPlayerActivity;
 import com.sample.soundcloud.adapters.FavoritesAdapter;
 import com.sample.soundcloud.models.Account;
@@ -72,7 +71,20 @@ public class AccountFragment extends Fragment implements // region Interfaces
     public static final String AUDIO_ARTIST = "AUDIO_ARTIST";
     public static final String AUDIO_TITLE = "AUDIO_TITLE";
     public static final String IMG_URL = "IMG_URL";
+
+    //    public static final String USERNAME = "hardwell";
+//    public static final String USERNAME = "eric-oetting";
+//    public static final String USERNAME = "kaskade";
+//    public static final String USERNAME = "lawlorslaw";
+//    public static final String USERNAME = "calvinharris";
+//    public static final String USERNAME = "mallywobbles";
+//    public static final String USERNAME = "dillonfrancis";
+//    public static final String USERNAME = "zedd";
+//    public static final String USERNAME = "martingarrix";
+    public static final String USERNAME = "tiesto";
+
     public static final int TEN_MINUTES = 600000;
+    public static final int PAGE_LIMIT = 5;
 
     // The authority for the sync adapter's content provider
     private static final String AUTHORITY = "com.sample.soundcloud.provider";
@@ -353,8 +365,8 @@ public class AccountFragment extends Fragment implements // region Interfaces
             // Account is not cached
 
             Observable.combineLatest(
-                    soundCloudService.getUserProfile(SoundcloudConstants.USERNAME),
-                    soundCloudService.getFavoriteTracks(SoundcloudConstants.USERNAME),
+                    soundCloudService.getUserProfile(USERNAME),
+                    soundCloudService.getFavoriteTracks(USERNAME),
                     new Func2<UserProfile, List<Track>, Account>() {
                         @Override
                         public Account call(UserProfile userProfile, List<Track> tracks) {
@@ -549,7 +561,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
     private android.accounts.Account createSyncAccount(Context context) {
         // Create the account type and default account
         android.accounts.Account newAccount = new android.accounts.Account(
-                SoundcloudConstants.USERNAME, ACCOUNT_TYPE);
+                USERNAME, ACCOUNT_TYPE);
         // Get an instance of the Android account manager
         AccountManager accountManager =
                 (AccountManager) context.getSystemService(

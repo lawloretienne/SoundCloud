@@ -11,20 +11,16 @@ import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.SyncResult;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
-import android.view.View;
 
-import com.sample.soundcloud.R;
 import com.sample.soundcloud.SoundcloudApplication;
-import com.sample.soundcloud.SoundcloudConstants;
+import com.sample.soundcloud.fragments.AccountFragment;
 import com.sample.soundcloud.network.ServiceGenerator;
 import com.sample.soundcloud.network.SoundCloudService;
 import com.sample.soundcloud.network.models.Track;
 import com.sample.soundcloud.network.models.UserProfile;
 import com.sample.soundcloud.realm.RealmUtility;
 import com.sample.soundcloud.realm.models.RealmAccount;
-import com.sample.soundcloud.utilities.TrestleUtility;
 
 import java.util.List;
 
@@ -108,8 +104,8 @@ public class AccountSyncAdapter extends AbstractThreadedSyncAdapter {
     // region Helper Methods
     private void loadAccount(){
         Observable.combineLatest(
-                soundCloudService.getUserProfile(SoundcloudConstants.USERNAME),
-                soundCloudService.getFavoriteTracks(SoundcloudConstants.USERNAME),
+                soundCloudService.getUserProfile(AccountFragment.USERNAME),
+                soundCloudService.getFavoriteTracks(AccountFragment.USERNAME),
                 new Func2<UserProfile, List<Track>, com.sample.soundcloud.models.Account>() {
                     @Override
                     public com.sample.soundcloud.models.Account call(UserProfile userProfile, List<Track> tracks) {

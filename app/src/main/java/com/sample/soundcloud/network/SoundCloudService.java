@@ -9,21 +9,23 @@ import java.util.List;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
-import retrofit2.http.Headers;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import rx.Observable;
 
 public interface SoundCloudService {
 
     String BASE_URL = "http://api.soundcloud.com";
 
-    @Headers("Accept: application/json")
-    @GET("/users/{username}.json")
+    @GET("/users/{username}")
     Observable<UserProfile> getUserProfile(@Path("username") String username);
 
-    @Headers("Accept: application/json")
-    @GET("/users/{username}/favorites.json")
+    @GET("/users/{username}/favorites")
     Observable<List<Track>> getFavoriteTracks(@Path("username") String username);
+
+
+//    @GET("/users/{username}/favorites")
+//    Observable<List<Track>> getFavoriteTracks(@Path("username") String username, @Query("limit") int limit, @Query("offset") int offset);
 
     @GET("/tracks/{trackId}/stream")
     Call<ResponseBody> getStreamInfo(@Path("trackId") long trackId);
