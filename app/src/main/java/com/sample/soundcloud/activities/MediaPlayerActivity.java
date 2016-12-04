@@ -266,7 +266,7 @@ public class MediaPlayerActivity extends AppCompatActivity {
 
             progressBar.setVisibility(View.GONE);
 
-//            if(t instanceof ConnectException){
+//            if(NetworkUtility.isKnownException(t)){
 //                errorTextView.setText("Can't load data.\nCheck your network connection.");
 //                errorLinearLayout.setVisibility(View.VISIBLE);
 //            }

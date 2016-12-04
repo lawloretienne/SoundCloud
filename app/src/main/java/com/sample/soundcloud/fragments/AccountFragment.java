@@ -34,6 +34,7 @@ import com.sample.soundcloud.realm.RealmUtility;
 import com.sample.soundcloud.realm.models.RealmAccount;
 import com.sample.soundcloud.realm.models.RealmTrack;
 import com.sample.soundcloud.realm.models.RealmUserProfile;
+import com.sample.soundcloud.utilities.NetworkUtility;
 import com.squareup.leakcanary.RefWatcher;
 import com.squareup.picasso.Picasso;
 
@@ -348,16 +349,19 @@ public class AccountFragment extends Fragment implements // region Interfaces
                         }
                     }, new Action1<Throwable>() {
                         @Override
-                        public void call(Throwable throwable) {
-                            Timber.e(throwable, "Soundcloud error");
+                        public void call(Throwable t) {
+                            Timber.e(t, "Soundcloud error");
                             progressBar.setVisibility(View.GONE);
 
-                            if (throwable instanceof HttpException) {
-                                int responseCode = ((HttpException) throwable).code();
-                                if(responseCode == 504) { // 504 Unsatisfiable Request (only-if-cached)
-                                    errorTextView.setText("Can't load data.\nCheck your network connection.");
-                                    errorLinearLayout.setVisibility(View.VISIBLE);
-                                }
+                            if (NetworkUtility.isKnownException(t)) {
+//                                int responseCode = ((HttpException) throwable).code();
+//                                if(responseCode == 504) { // 504 Unsatisfiable Request (only-if-cached)
+//                                    errorTextView.setText("Can't load data.\nCheck your network connection.");
+//                                    errorLinearLayout.setVisibility(View.VISIBLE);
+//                                }
+
+                                errorTextView.setText("Can't load data.\nCheck your network connection.");
+                                errorLinearLayout.setVisibility(View.VISIBLE);
                             }
                         }
                     });

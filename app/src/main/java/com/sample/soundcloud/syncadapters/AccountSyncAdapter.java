@@ -21,6 +21,7 @@ import com.sample.soundcloud.network.models.Track;
 import com.sample.soundcloud.network.models.UserProfile;
 import com.sample.soundcloud.realm.RealmUtility;
 import com.sample.soundcloud.realm.models.RealmAccount;
+import com.sample.soundcloud.utilities.NetworkUtility;
 
 import java.util.List;
 
@@ -130,22 +131,23 @@ public class AccountSyncAdapter extends AbstractThreadedSyncAdapter {
                     }
                 }, new Action1<Throwable>() {
                     @Override
-                    public void call(Throwable throwable) {
-                        Timber.e(throwable, "Soundcloud error");
+                    public void call(Throwable t) {
+                        Timber.e(t, "Soundcloud error");
 
-                        if (throwable instanceof HttpException) {
-                            int responseCode = ((HttpException) throwable).code();
-                            if(responseCode == 504) { // 504 Unsatisfiable Request (only-if-cached)
-//                                errorTextView.setText("Can't load data.\nCheck your network connection.");
-//                                errorLinearLayout.setVisibility(View.VISIBLE);
+                        if (NetworkUtility.isKnownException(t)) {
 
-                                Timber.e("504 Unsatisfiable Request (only-if-cached)");
-
-//                                Snackbar.make(findViewById(R.id.main_content),
-//                                        TrestleUtility.getFormattedText("Network connection is unavailable.", font, 16),
-//                                        Snackbar.LENGTH_LONG)
-//                                        .show();
-                            }
+//                            int responseCode = ((HttpException) t).code();
+//                            if(responseCode == 504) { // 504 Unsatisfiable Request (only-if-cached)
+////                                errorTextView.setText("Can't load data.\nCheck your network connection.");
+////                                errorLinearLayout.setVisibility(View.VISIBLE);
+//
+//                                Timber.e("504 Unsatisfiable Request (only-if-cached)");
+//
+////                                Snackbar.make(findViewById(R.id.main_content),
+////                                        TrestleUtility.getFormattedText("Network connection is unavailable.", font, 16),
+////                                        Snackbar.LENGTH_LONG)
+////                                        .show();
+//                            }
                         }
                     }
                 });
