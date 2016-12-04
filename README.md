@@ -11,4 +11,4 @@ You can also listen to any of the Liked tracks in the media player screen
 
 MainActivity           |  MediaPlayerActivity
 :-------------------------:|:-------------------------:
-![](https://raw.githubusercontent.com/lawloretienne/Soundcloud/master/images/SoundCloud_Screenshot_5.png)  |  ![](https://raw.githubusercontent.com/lawloretienne/Soundcloud/master/images/SoundCloud_Screenshot_6.png)
+![](https://raw.githubusercontent.com/lawloretienne/Soundcloud/master/images/SoundCloud_Screenshot_7.png)  |  ![](https://raw.githubusercontent.com/lawloretienne/Soundcloud/master/images/SoundCloud_Screenshot_8.png)

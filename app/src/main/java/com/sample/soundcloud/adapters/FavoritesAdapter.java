@@ -5,7 +5,11 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sample.soundcloud.R;
@@ -24,83 +28,31 @@ import timber.log.Timber;
 /**
  * Created by etiennelawlor on 3/21/15.
  */
-public class FavoritesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class FavoritesAdapter extends BaseAdapter<RealmTrack> {
 
-    // region Constants
-    private static final int HEADER = 0;
-    private static final int ITEM = 1;
-    private static final int LOADING = 2;
-    // endregion
 
     // region Member Variables
-    private List<RealmTrack> tracks;
-    private OnItemClickListener onItemClickListener;
-    private boolean isLoadingFooterAdded = false;
-    // endregion
-
-    // region Interfaces
-    public interface OnItemClickListener {
-        void onItemClick(int position, View view);
-    }
+    private FooterViewHolder footerViewHolder;
     // endregion
 
     // region Constructors
     public FavoritesAdapter() {
-        tracks = new ArrayList<>();
+        super();
     }
     // endregion
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder viewHolder = null;
-
-        switch (viewType) {
-            case HEADER:
-//                viewHolder = createHeaderViewHolder(parent);
-                break;
-            case ITEM:
-                viewHolder = createTrackViewHolder(parent);
-                break;
-            case LOADING:
-                viewHolder = createLoadingViewHolder(parent);
-                break;
-            default:
-                Timber.e("[ERR] type is not supported!!! type is %d", viewType);
-                break;
-        }
-
-        return viewHolder;
-    }
-
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        switch (getItemViewType(position)) {
-            case HEADER:
-//                bindHeaderViewHolder(viewHolder);
-                break;
-            case ITEM:
-                bindTrackViewHolder(viewHolder, position);
-                break;
-            case LOADING:
-                bindLoadingViewHolder(viewHolder);
-            default:
-                break;
-        }
-    }
-
-    @Override
-    public int getItemCount() {
-        return tracks.size();
-    }
-
-    @Override
     public int getItemViewType(int position) {
-        return ITEM;
+        return (isLastPosition(position) && isFooterAdded) ? FOOTER : ITEM;
     }
 
-    // region Helper Methods
+    @Override
+    protected RecyclerView.ViewHolder createHeaderViewHolder(ViewGroup parent) {
+        return null;
+    }
 
-    private RecyclerView.ViewHolder createTrackViewHolder(ViewGroup parent) {
+    @Override
+    protected RecyclerView.ViewHolder createItemViewHolder(ViewGroup parent) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.track_row, parent, false);
 
         final TrackViewHolder holder = new TrackViewHolder(v);
@@ -120,16 +72,33 @@ public class FavoritesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         return holder;
     }
 
-    private RecyclerView.ViewHolder createLoadingViewHolder(ViewGroup parent) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.load_more, parent, false);
+    @Override
+    protected RecyclerView.ViewHolder createFooterViewHolder(ViewGroup parent) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_footer, parent, false);
 
-        return new MoreViewHolder(v);
+        final FooterViewHolder holder = new FooterViewHolder(v);
+        holder.reloadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(onReloadClickListener != null){
+                    onReloadClickListener.onReloadClick();
+                }
+            }
+        });
+
+        return holder;
     }
 
-    private void bindTrackViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+    @Override
+    protected void bindHeaderViewHolder(RecyclerView.ViewHolder viewHolder) {
+
+    }
+
+    @Override
+    protected void bindItemViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         final TrackViewHolder holder = (TrackViewHolder) viewHolder;
 
-        final RealmTrack track = tracks.get(position);
+        final RealmTrack track = getItem(position);
 
         if (track != null) {
             setUpArtWork(holder.artworkImageView, track);
@@ -140,65 +109,35 @@ public class FavoritesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
-    private void bindLoadingViewHolder(RecyclerView.ViewHolder viewHolder) {
-        MoreViewHolder holder = (MoreViewHolder) viewHolder;
+    @Override
+    protected void bindFooterViewHolder(RecyclerView.ViewHolder viewHolder) {
+        FooterViewHolder holder = (FooterViewHolder) viewHolder;
+        footerViewHolder = holder;
     }
 
-    public void add(RealmTrack item) {
-        tracks.add(item);
-        notifyItemInserted(tracks.size() - 1);
-    }
-
-    public void addAll(List<RealmTrack> realmTracks) {
-        for (RealmTrack realmTrack : realmTracks) {
-            add(realmTrack);
+    @Override
+    protected void displayLoadMoreFooter() {
+        if(footerViewHolder!= null){
+            footerViewHolder.errorRelativeLayout.setVisibility(View.GONE);
+            footerViewHolder.loadingFrameLayout.setVisibility(View.VISIBLE);
         }
     }
 
-    private void remove(RealmTrack item) {
-        int position = tracks.indexOf(item);
-        if (position > -1) {
-            tracks.remove(position);
-            notifyItemRemoved(position);
+    @Override
+    protected void displayErrorFooter() {
+        if(footerViewHolder!= null){
+            footerViewHolder.loadingFrameLayout.setVisibility(View.GONE);
+            footerViewHolder.errorRelativeLayout.setVisibility(View.VISIBLE);
         }
     }
 
-    public void clear() {
-        isLoadingFooterAdded = false;
-        while (getItemCount() > 0) {
-            remove(getItem(0));
-        }
-    }
-
-    public boolean isEmpty() {
-        return getItemCount() == 0;
-    }
-
-    public void addLoading() {
-        isLoadingFooterAdded = true;
+    @Override
+    public void addFooter() {
+        isFooterAdded = true;
         add(new RealmTrack());
     }
 
-    public void removeLoading() {
-        isLoadingFooterAdded = false;
-
-        int position = tracks.size() - 1;
-        RealmTrack item = getItem(position);
-
-        if (item != null) {
-            tracks.remove(position);
-            notifyItemRemoved(position);
-        }
-    }
-
-    public RealmTrack getItem(int position) {
-        return tracks.get(position);
-    }
-
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        this.onItemClickListener = onItemClickListener;
-    }
-
+    // region Helper Methods
     private void setUpArtWork(ImageView iv, RealmTrack track) {
         String artworkUrl = track.getArtworkUrl();
 
@@ -291,12 +230,20 @@ public class FavoritesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         // endregion
     }
 
-    public static class MoreViewHolder extends RecyclerView.ViewHolder {
+    public static class FooterViewHolder extends RecyclerView.ViewHolder {
         // region Views
+        @Bind(R.id.loading_fl)
+        FrameLayout loadingFrameLayout;
+        @Bind(R.id.error_rl)
+        RelativeLayout errorRelativeLayout;
+        @Bind(R.id.pb)
+        ProgressBar progressBar;
+        @Bind(R.id.reload_btn)
+        Button reloadButton;
         // endregion
 
         // region Constructors
-        public MoreViewHolder(View view) {
+        public FooterViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
         }

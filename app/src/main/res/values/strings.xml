@@ -5,4 +5,5 @@
     <string name="no_liked_tracks">No Liked Tracks</string>
     <string name="content_desc">Content Description</string>
     <string name="reload">Reload</string>
+    <string name="check_your_network_connection">Can\'t load data. Check your network connection.</string>
 </resources>

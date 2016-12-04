@@ -17,7 +17,7 @@
         android:gravity="center"
         android:textColor="@android:color/white"
         android:textSize="16sp"
-        android:textAllCaps="false"
+        android:textAllCaps="true"
         app:textFont="maven_pro_medium"
         />
 
