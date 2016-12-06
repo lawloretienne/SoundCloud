@@ -30,6 +30,7 @@ import com.sample.soundcloud.R;
 import com.sample.soundcloud.fragments.AccountFragment;
 import com.sample.soundcloud.network.ServiceGenerator;
 import com.sample.soundcloud.network.SoundCloudService;
+import com.sample.soundcloud.network.interceptors.AuthorizedNetworkInterceptor;
 import com.sample.soundcloud.utilities.FontCache;
 import com.sample.soundcloud.utilities.NetworkLogUtility;
 import com.sample.soundcloud.utilities.TrestleUtility;
@@ -310,7 +311,8 @@ public class MediaPlayerActivity extends AppCompatActivity {
 
         soundCloudService = ServiceGenerator.createService(
                 SoundCloudService.class,
-                SoundCloudService.BASE_URL);
+                SoundCloudService.BASE_URL,
+                new AuthorizedNetworkInterceptor(this));
 
         Call getStreamInfoCall = soundCloudService.getStreamInfo(trackId);
         calls.add(getStreamInfoCall);

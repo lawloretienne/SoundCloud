@@ -14,19 +14,17 @@ import rx.Observable;
 
 public interface SoundCloudService {
 
-    String BASE_URL = "http://api.soundcloud.com";
+    String BASE_URL = "http://api.soundcloud.com/";
 
-    @GET("/users/{username}")
+    @GET("users/{username}")
     Observable<UserProfile> getUserProfile(@Path("username") String username);
 
-    @GET("/users/{username}/favorites")
+    @GET("users/{username}/favorites")
     Observable<List<Track>> getFavoriteTracks(@Path("username") String username);
-
 
 //    @GET("/users/{username}/favorites")
 //    Observable<List<Track>> getFavoriteTracks(@Path("username") String username, @Query("limit") int limit, @Query("offset") int offset);
 
-    @GET("/tracks/{trackId}/stream")
+    @GET("tracks/{trackId}/stream")
     Call<ResponseBody> getStreamInfo(@Path("trackId") long trackId);
-
 }

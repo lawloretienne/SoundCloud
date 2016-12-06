@@ -17,6 +17,7 @@ import com.sample.soundcloud.SoundcloudApplication;
 import com.sample.soundcloud.fragments.AccountFragment;
 import com.sample.soundcloud.network.ServiceGenerator;
 import com.sample.soundcloud.network.SoundCloudService;
+import com.sample.soundcloud.network.interceptors.AuthorizedNetworkInterceptor;
 import com.sample.soundcloud.network.models.Track;
 import com.sample.soundcloud.network.models.UserProfile;
 import com.sample.soundcloud.realm.RealmUtility;
@@ -156,7 +157,8 @@ public class AccountSyncAdapter extends AbstractThreadedSyncAdapter {
     private void initService(){
         soundCloudService = ServiceGenerator.createService(
                 SoundCloudService.class,
-                SoundCloudService.BASE_URL);
+                SoundCloudService.BASE_URL,
+                new AuthorizedNetworkInterceptor(context));
     }
     // endregion
 

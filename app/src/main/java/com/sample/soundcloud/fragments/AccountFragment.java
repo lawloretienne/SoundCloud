@@ -28,6 +28,7 @@ import com.sample.soundcloud.adapters.FavoritesAdapter;
 import com.sample.soundcloud.models.Account;
 import com.sample.soundcloud.network.ServiceGenerator;
 import com.sample.soundcloud.network.SoundCloudService;
+import com.sample.soundcloud.network.interceptors.AuthorizedNetworkInterceptor;
 import com.sample.soundcloud.network.models.Track;
 import com.sample.soundcloud.network.models.UserProfile;
 import com.sample.soundcloud.realm.RealmUtility;
@@ -73,8 +74,8 @@ public class AccountFragment extends Fragment implements // region Interfaces
 
     //    public static final String USERNAME = "hardwell";
 //    public static final String USERNAME = "eric-oetting";
-    public static final String USERNAME = "kaskade";
-//    public static final String USERNAME = "lawlorslaw";
+//    public static final String USERNAME = "kaskade";
+    public static final String USERNAME = "lawlorslaw";
 //    public static final String USERNAME = "calvinharris";
 //    public static final String USERNAME = "mallywobbles";
 //    public static final String USERNAME = "dillonfrancis";
@@ -204,7 +205,8 @@ public class AccountFragment extends Fragment implements // region Interfaces
 
         soundCloudService = ServiceGenerator.createService(
                 SoundCloudService.class,
-                SoundCloudService.BASE_URL);
+                SoundCloudService.BASE_URL,
+                new AuthorizedNetworkInterceptor(getContext()));
 
         // Create account, if needed
         android.accounts.Account androidAccount = createSyncAccount(getActivity());
