@@ -52,7 +52,7 @@ public final class UserProfile {
 
     // region Fields
     @SerializedName("id")
-    private Long id;
+    private long id;
     @SerializedName("kind")
     private String kind;
     @SerializedName("permalink")
@@ -88,19 +88,19 @@ public final class UserProfile {
     @SerializedName("website_title")
     private String websiteTitle;
     @SerializedName("online")
-    private Boolean online;
+    private boolean online;
     @SerializedName("track_count")
-    private Integer trackCount;
+    private int trackCount;
     @SerializedName("playlist_count")
-    private Integer playlistCount;
+    private int playlistCount;
     @SerializedName("plan")
     private String plan;
     @SerializedName("public_favorites_count")
-    private Integer publicFavoritesCount;
+    private int publicFavoritesCount;
     @SerializedName("followers_count")
-    private Integer followersCount;
+    private int followersCount;
     @SerializedName("followings_count")
-    private Integer followingsCount;
+    private int followingsCount;
 //    @SerializedName("subscriptions")
 //    private List<Subscription> subscriptions;
 
@@ -108,179 +108,104 @@ public final class UserProfile {
 
     // region Getters
 
-    public Long getId() {
-        if (id == null)
-            return -1L;
-        else
-            return id;
+    public long getId() {
+        return id;
     }
 
     public String getKind() {
-        if (TextUtils.isEmpty(kind))
-            return "";
-        else
-            return kind;
+        return kind;
     }
 
     public String getPermalink() {
-        if (TextUtils.isEmpty(permalink))
-            return "";
-        else
-            return permalink;
+        return permalink;
     }
 
     public String getUsername() {
-        if (TextUtils.isEmpty(username))
-            return "";
-        else
-            return username;
+        return username;
     }
 
     public String getLastModified() {
-        if (TextUtils.isEmpty(lastModified))
-            return "";
-        else
-            return lastModified;
+        return lastModified;
     }
 
     public String getUri() {
-        if (TextUtils.isEmpty(uri))
-            return "";
-        else
-            return uri;
+        return uri;
     }
 
     public String getPermalinkUrl() {
-        if (TextUtils.isEmpty(permalinkUrl))
-            return "";
-        else
-            return permalinkUrl;
+        return permalinkUrl;
     }
 
     public String getAvatarUrl() {
-        if (TextUtils.isEmpty(avatarUrl))
-            return "";
-        else
-            return avatarUrl;
+        return avatarUrl;
     }
 
     public String getCountry() {
-        if (TextUtils.isEmpty(country))
-            return "";
-        else
-            return country;
+        return country;
     }
 
     public String getFirstName() {
-        if (TextUtils.isEmpty(firstName))
-            return "";
-        else
-            return firstName;
+        return firstName;
     }
 
     public String getLastName() {
-        if (TextUtils.isEmpty(lastName))
-            return "";
-        else
-            return lastName;
+        return lastName;
     }
 
     public String getFullName() {
-        if (TextUtils.isEmpty(fullName))
-            return "";
-        else
-            return fullName;
+        return fullName;
     }
 
     public String getDescription() {
-        if (TextUtils.isEmpty(description))
-            return "";
-        else
-            return description;
+        return description;
     }
 
     public String getCity() {
-        if (TextUtils.isEmpty(city))
-            return "";
-        else
-            return city;
+        return city;
     }
 
     public String getDiscogsName() {
-        if (TextUtils.isEmpty(discogsName))
-            return "";
-        else
-            return discogsName;
+        return discogsName;
     }
 
     public String getMyspaceName() {
-        if (TextUtils.isEmpty(myspaceName))
-            return "";
-        else
-            return myspaceName;
+        return myspaceName;
     }
 
     public String getWebsite() {
-        if (TextUtils.isEmpty(website))
-            return "";
-        else
-            return website;
+        return website;
     }
 
     public String getWebsiteTitle() {
-        if (TextUtils.isEmpty(websiteTitle))
-            return "";
-        else
-            return websiteTitle;
+        return websiteTitle;
     }
 
-    public Boolean isOnline() {
-        if (online == null)
-            return false;
-        else
-            return online;
+    public boolean isOnline() {
+        return online;
     }
 
-    public Integer getTrackCount() {
-        if (trackCount == null)
-            return -1;
-        else
-            return trackCount;
+    public int getTrackCount() {
+        return trackCount;
     }
 
-    public Integer getPlaylistCount() {
-        if (playlistCount == null)
-            return -1;
-        else
-            return playlistCount;
+    public int getPlaylistCount() {
+        return playlistCount;
     }
 
     public String getPlan() {
-        if (TextUtils.isEmpty(plan))
-            return "";
-        else
-            return plan;
+        return plan;
     }
 
-    public Integer getPublicFavoritesCount() {
-        if (publicFavoritesCount == null)
-            return -1;
-        else
-            return publicFavoritesCount;
+    public int getPublicFavoritesCount() {
+        return publicFavoritesCount;
     }
 
-    public Integer getFollowersCount() {
-        if (followersCount == null)
-            return -1;
-        else
-            return followersCount;
+    public int getFollowersCount() {
+        return followersCount;
     }
 
-    public Integer getFollowingsCount() {
-        if (followingsCount == null)
-            return -1;
-        else
-            return followingsCount;
+    public int getFollowingsCount() {
+        return followingsCount;
     }
 
 //    public List<Subscription> getSubscriptions() {
@@ -290,7 +215,7 @@ public final class UserProfile {
 
     // region Setters
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -362,15 +287,15 @@ public final class UserProfile {
         this.websiteTitle = websiteTitle;
     }
 
-    public void setOnline(Boolean online) {
+    public void setOnline(boolean online) {
         this.online = online;
     }
 
-    public void setTrackCount(Integer trackCount) {
+    public void setTrackCount(int trackCount) {
         this.trackCount = trackCount;
     }
 
-    public void setPlaylistCount(Integer playlistCount) {
+    public void setPlaylistCount(int playlistCount) {
         this.playlistCount = playlistCount;
     }
 
@@ -378,15 +303,15 @@ public final class UserProfile {
         this.plan = plan;
     }
 
-    public void setPublicFavoritesCount(Integer publicFavoritesCount) {
+    public void setPublicFavoritesCount(int publicFavoritesCount) {
         this.publicFavoritesCount = publicFavoritesCount;
     }
 
-    public void setFollowersCount(Integer followersCount) {
+    public void setFollowersCount(int followersCount) {
         this.followersCount = followersCount;
     }
 
-    public void setFollowingsCount(Integer followingsCount) {
+    public void setFollowingsCount(int followingsCount) {
         this.followingsCount = followingsCount;
     }
 

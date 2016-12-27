@@ -4,7 +4,7 @@
     <color name="primary_light">#ff7733</color>
     <color name="primary">#ff5500</color>
     <color name="primary_dark">#CC4400</color>
-    <color name="accent">@color/debug_red</color>
+    <color name="accent">@color/red_A400</color>
 
     <color name="semi_subtle_soundcloud">#FFAA80</color>
     <color name="subtle_soundcloud">#FFEEE6</color>

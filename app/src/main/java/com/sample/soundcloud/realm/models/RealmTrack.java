@@ -2,6 +2,9 @@ package com.sample.soundcloud.realm.models;
 
 import android.text.TextUtils;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 import io.realm.RealmObject;
 
 /**
@@ -26,10 +29,7 @@ public class RealmTrack extends RealmObject {
     }
 
     public String getCreatedAt() {
-        if (TextUtils.isEmpty(createdAt))
-            return "";
-        else
-            return createdAt;
+        return createdAt;
     }
 
     public long getDuration() {
@@ -37,10 +37,7 @@ public class RealmTrack extends RealmObject {
     }
 
     public String getTitle() {
-        if (TextUtils.isEmpty(title))
-            return "";
-        else
-            return title;
+        return title;
     }
 
     public RealmUserProfile getUser() {
@@ -48,17 +45,16 @@ public class RealmTrack extends RealmObject {
     }
 
     public String getArtworkUrl() {
-        if (TextUtils.isEmpty(artworkUrl))
-            return "";
-        else
+        if(!TextUtils.isEmpty(artworkUrl)){
+            artworkUrl = artworkUrl.replace("large.jpg", "t500x500.jpg");
             return artworkUrl;
+        } else {
+            return "";
+        }
     }
 
     public String getStreamUrl() {
-        if (TextUtils.isEmpty(streamUrl))
-            return "";
-        else
-            return streamUrl;
+        return streamUrl;
     }
 
     public int getPlaybackCount() {

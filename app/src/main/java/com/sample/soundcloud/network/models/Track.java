@@ -64,19 +64,19 @@ public final class Track {
     @SerializedName("kind")
     private String kind;
     @SerializedName("id")
-    private Long id;
+    private long id;
     @SerializedName("created_at")
     private String createdAt;
     @SerializedName("user_id")
-    private Long userId;
+    private long userId;
     @SerializedName("duration")
-    private Long duration;
+    private long duration;
     @SerializedName("commentable")
-    private Boolean commentable;
+    private boolean commentable;
     @SerializedName("state")
     private String state;
     @SerializedName("original_content_size")
-    private Long originalContentSize;
+    private long originalContentSize;
     @SerializedName("last_modified")
     private String lastModified;
     @SerializedName("sharing")
@@ -86,11 +86,11 @@ public final class Track {
     @SerializedName("permalink")
     private String permalink;
     @SerializedName("streamable")
-    private Boolean streamable;
+    private boolean streamable;
     @SerializedName("embeddable_by")
     private String embeddableBy;
     @SerializedName("downloadable")
-    private Boolean downloadable;
+    private boolean downloadable;
     @SerializedName("purchase_url")
     private String purchaseUrl;
     @SerializedName("label_id")
@@ -140,13 +140,13 @@ public final class Track {
     @SerializedName("stream_url")
     private String streamUrl;
     @SerializedName("playback_count")
-    private Integer playbackCount;
+    private int playbackCount;
     @SerializedName("download_count")
-    private Integer downloadCount;
+    private int downloadCount;
     @SerializedName("favoritingsCount")
-    private Integer favoritingsCount;
+    private int favoritingsCount;
     @SerializedName("comment_count")
-    private Integer commentCount;
+    private int commentCount;
     @SerializedName("attachments_uri")
     private String attachmentsUri;
     @SerializedName("policy")
@@ -156,241 +156,139 @@ public final class Track {
     // region Getters
 
     public String getKind() {
-        if (TextUtils.isEmpty(kind))
-            return "";
-        else
-            return kind;
+        return kind;
     }
 
-    public Long getId() {
-        if (id == null)
-            return -1L;
-        else
-            return id;
+    public long getId() {
+        return id;
     }
 
     public String getCreatedAt() {
-        if (TextUtils.isEmpty(createdAt))
-            return "";
-        else
-            return createdAt;
+        return createdAt;
     }
 
-    public Long getUserId() {
-        if (userId == null)
-            return -1L;
-        else
-            return userId;
+    public long getUserId() {
+        return userId;
     }
 
-    public Long getDuration() {
-        if (duration == null)
-            return -1L;
-        else
-            return duration;
+    public long getDuration() {
+        return duration;
     }
 
-    public Boolean isCommentable() {
-        if (commentable == null)
-            return false;
-        else
-            return commentable;
+    public boolean isCommentable() {
+        return commentable;
     }
 
     public String getState() {
-        if (TextUtils.isEmpty(state))
-            return "";
-        else
-            return state;
+        return state;
     }
 
-    public Long getOriginalContentSize() {
-        if (originalContentSize == null)
-            return -1L;
-        else
-            return originalContentSize;
+    public long getOriginalContentSize() {
+        return originalContentSize;
     }
 
     public String getLastModified() {
-        if (TextUtils.isEmpty(lastModified))
-            return "";
-        else
-            return lastModified;
+        return lastModified;
     }
 
     public String getSharing() {
-        if (TextUtils.isEmpty(sharing))
-            return "";
-        else
-            return sharing;
+        return sharing;
     }
 
     public String getTagList() {
-        if (TextUtils.isEmpty(tagList))
-            return "";
-        else
-            return tagList;
+        return tagList;
     }
 
     public String getPermalink() {
-        if (TextUtils.isEmpty(permalink))
-            return "";
-        else
-            return permalink;
+        return permalink;
     }
 
-    public Boolean isStreamable() {
-        if (streamable == null)
-            return false;
-        else
-            return streamable;
+    public boolean isStreamable() {
+        return streamable;
     }
 
     public String getEmbeddableBy() {
-        if (TextUtils.isEmpty(embeddableBy))
-            return "";
-        else
-            return embeddableBy;
+        return embeddableBy;
     }
 
-    public Boolean isDownloadable() {
-        if (downloadable == null)
-            return false;
-        else
-            return downloadable;
+    public boolean isDownloadable() {
+        return downloadable;
     }
 
     public String getPurchaseUrl() {
-        if (TextUtils.isEmpty(purchaseUrl))
-            return "";
-        else
-            return purchaseUrl;
+        return purchaseUrl;
     }
 
     public String getLabelId() {
-        if (TextUtils.isEmpty(labelId))
-            return "";
-        else
-            return labelId;
+        return labelId;
     }
 
     public String getPurchaseTitle() {
-        if (TextUtils.isEmpty(purchaseTitle))
-            return "";
-        else
-            return purchaseTitle;
+        return purchaseTitle;
     }
 
     public String getGenre() {
-        if (TextUtils.isEmpty(genre))
-            return "";
-        else
-            return genre;
+        return genre;
     }
 
     public String getTitle() {
-        if (TextUtils.isEmpty(title))
-            return "";
-        else
-            return title;
+        return title;
     }
 
     public String getDescription() {
-        if (TextUtils.isEmpty(description))
-            return "";
-        else
-            return description;
+        return description;
     }
 
     public String getLabelName() {
-        if (TextUtils.isEmpty(labelName))
-            return "";
-        else
-            return labelName;
+        return labelName;
     }
 
     public String getRelease() {
-        if (TextUtils.isEmpty(release))
-            return "";
-        else
-            return release;
+        return release;
     }
 
     public String getTrackType() {
-        if (TextUtils.isEmpty(trackType))
-            return "";
-        else
-            return trackType;
+        return trackType;
     }
 
     public String getKeySignature() {
-        if (TextUtils.isEmpty(keySignature))
-            return "";
-        else
-            return keySignature;
+        return keySignature;
     }
 
     public String getIsrc() {
-        if (TextUtils.isEmpty(isrc))
-            return "";
-        else
-            return isrc;
+        return isrc;
     }
 
     public String getVideoUrl() {
-        if (TextUtils.isEmpty(videoUrl))
-            return "";
-        else
-            return videoUrl;
+        return videoUrl;
     }
 
     public String getBpm() {
-        if (TextUtils.isEmpty(bpm))
-            return "";
-        else
-            return bpm;
+        return bpm;
     }
 
     public String getReleaseYear() {
-        if (TextUtils.isEmpty(releaseYear))
-            return "";
-        else
-            return releaseYear;
+        return releaseYear;
     }
 
     public String getReleaseMonth() {
-        if (TextUtils.isEmpty(releaseMonth))
-            return "";
-        else
-            return releaseMonth;
+        return releaseMonth;
     }
 
     public String getReleaseDay() {
-        if (TextUtils.isEmpty(releaseDay))
-            return "";
-        else
-            return releaseDay;
+        return releaseDay;
     }
 
     public String getOriginalFormat() {
-        if (TextUtils.isEmpty(originalFormat))
-            return "";
-        else
-            return originalFormat;
+        return originalFormat;
     }
 
     public String getLicense() {
-        if (TextUtils.isEmpty(license))
-            return "";
-        else
-            return license;
+        return license;
     }
 
     public String getUri() {
-        if (TextUtils.isEmpty(uri))
-            return "";
-        else
-            return uri;
+        return uri;
     }
 
     public UserProfile getUser() {
@@ -398,73 +296,43 @@ public final class Track {
     }
 
     public String getPermalinkUrl() {
-        if (TextUtils.isEmpty(permalinkUrl))
-            return "";
-        else
-            return permalinkUrl;
+        return permalinkUrl;
     }
 
     public String getArtworkUrl() {
-        if (TextUtils.isEmpty(artworkUrl))
-            return "";
-        else
-            return artworkUrl;
+        return artworkUrl;
     }
 
     public String getWaveformUrl() {
-        if (TextUtils.isEmpty(waveformUrl))
-            return "";
-        else
-            return waveformUrl;
+        return waveformUrl;
     }
 
     public String getStreamUrl() {
-        if (TextUtils.isEmpty(streamUrl))
-            return "";
-        else
-            return streamUrl;
+        return streamUrl;
     }
 
-    public Integer getPlaybackCount() {
-        if (playbackCount == null)
-            return -1;
-        else
-            return playbackCount;
+    public int getPlaybackCount() {
+        return playbackCount;
     }
 
-    public Integer getDownloadCount() {
-        if (downloadCount == null)
-            return -1;
-        else
-            return downloadCount;
+    public int getDownloadCount() {
+        return downloadCount;
     }
 
-    public Integer getFavoritingsCount() {
-        if (favoritingsCount == null)
-            return -1;
-        else
-            return favoritingsCount;
+    public int getFavoritingsCount() {
+        return favoritingsCount;
     }
 
-    public Integer getCommentCount() {
-        if (commentCount == null)
-            return -1;
-        else
-            return commentCount;
+    public int getCommentCount() {
+        return commentCount;
     }
 
     public String getAttachmentsUri() {
-        if (TextUtils.isEmpty(attachmentsUri))
-            return "";
-        else
-            return attachmentsUri;
+        return attachmentsUri;
     }
 
     public String getPolicy() {
-        if (TextUtils.isEmpty(policy))
-            return "";
-        else
-            return policy;
+        return policy;
     }
     //endregion
 
@@ -474,7 +342,7 @@ public final class Track {
         this.kind = kind;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -482,15 +350,15 @@ public final class Track {
         this.createdAt = createdAt;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 
-    public void setDuration(Long duration) {
+    public void setDuration(long duration) {
         this.duration = duration;
     }
 
-    public void setCommentable(Boolean commentable) {
+    public void setCommentable(boolean commentable) {
         this.commentable = commentable;
     }
 
@@ -498,7 +366,7 @@ public final class Track {
         this.state = state;
     }
 
-    public void setOriginalContentSize(Long originalContentSize) {
+    public void setOriginalContentSize(long originalContentSize) {
         this.originalContentSize = originalContentSize;
     }
 
@@ -518,7 +386,7 @@ public final class Track {
         this.permalink = permalink;
     }
 
-    public void setStreamable(Boolean streamable) {
+    public void setStreamable(boolean streamable) {
         this.streamable = streamable;
     }
 
@@ -526,7 +394,7 @@ public final class Track {
         this.embeddableBy = embeddableBy;
     }
 
-    public void setDownloadable(Boolean downloadable) {
+    public void setDownloadable(boolean downloadable) {
         this.downloadable = downloadable;
     }
 
@@ -626,19 +494,19 @@ public final class Track {
         this.streamUrl = streamUrl;
     }
 
-    public void setPlaybackCount(Integer playbackCount) {
+    public void setPlaybackCount(int playbackCount) {
         this.playbackCount = playbackCount;
     }
 
-    public void setDownloadCount(Integer downloadCount) {
+    public void setDownloadCount(int downloadCount) {
         this.downloadCount = downloadCount;
     }
 
-    public void setFavoritingsCount(Integer favoritingsCount) {
+    public void setFavoritingsCount(int favoritingsCount) {
         this.favoritingsCount = favoritingsCount;
     }
 
-    public void setCommentCount(Integer commentCount) {
+    public void setCommentCount(int commentCount) {
         this.commentCount = commentCount;
     }
 
@@ -653,8 +521,7 @@ public final class Track {
 
     @Override
     public int hashCode() {
-        return this.getId().intValue() *
-                this.getCreatedAt().hashCode();
+        return (int)(getId() * getCreatedAt().hashCode());
     }
 
     @Override

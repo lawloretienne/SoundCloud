@@ -30,7 +30,6 @@ import timber.log.Timber;
  */
 public class FavoritesAdapter extends BaseAdapter<RealmTrack> {
 
-
     // region Member Variables
     private FooterViewHolder footerViewHolder;
     // endregion
@@ -101,11 +100,7 @@ public class FavoritesAdapter extends BaseAdapter<RealmTrack> {
         final RealmTrack track = getItem(position);
 
         if (track != null) {
-            setUpArtWork(holder.artworkImageView, track);
-            setUpUsername(holder.usernameTextView, track);
-            setUpTitle(holder.titleTextView, track);
-            setUpDuration(holder.durationTextView, track);
-            setUpPlaybackCount(holder.playbackCountTextView, track);
+            holder.bind(track);
         }
     }
 
@@ -137,75 +132,6 @@ public class FavoritesAdapter extends BaseAdapter<RealmTrack> {
         add(new RealmTrack());
     }
 
-    // region Helper Methods
-    private void setUpArtWork(ImageView iv, RealmTrack track) {
-        String artworkUrl = track.getArtworkUrl();
-
-        if (!TextUtils.isEmpty(artworkUrl)) {
-            artworkUrl = artworkUrl.replace("large.jpg", "t500x500.jpg");
-
-//                        https://i1.sndcdn.com/avatars-000028479557-aid19w-large.jpg
-            Picasso.with(iv.getContext())
-                    .load(artworkUrl)
-                            //                .placeholder(R.drawable.ic_placeholder)
-                            //                .error(R.drawable.ic_error)
-                    .into(iv);
-        }
-    }
-
-    private void setUpUsername(TextView tv, RealmTrack track) {
-        if (track.getUser() != null) {
-            String username = track.getUser().getUsername();
-            tv.setText(username);
-        }
-    }
-
-    private void setUpTitle(TextView tv, RealmTrack track) {
-        String title = track.getTitle();
-        tv.setText(title);
-    }
-
-    private void setUpDuration(TextView tv, RealmTrack track) {
-        long duration = track.getDuration();
-        duration /= 1000;
-
-        long minutes = duration / 60;
-        long seconds = duration % 60;
-
-        String time;
-        if (minutes == 0L) {
-            if (seconds > 0L) {
-                if (seconds < 10L)
-                    time = String.format("0:0%s", String.valueOf(seconds));
-                else
-                    time = String.format("0:%s", String.valueOf(seconds));
-            } else {
-                time = "0:00";
-            }
-
-        } else {
-            if (seconds > 0L) {
-                if (seconds < 10L)
-                    time = String.format("%s:0%s", String.valueOf(minutes), String.valueOf(seconds));
-                else
-                    time = String.format("%s:%s", String.valueOf(minutes), String.valueOf(seconds));
-            } else {
-                time = String.format("%s:00", String.valueOf(minutes));
-            }
-        }
-
-        tv.setText(time);
-    }
-
-    private void setUpPlaybackCount(TextView tv, RealmTrack track) {
-        int playbackCount = track.getPlaybackCount();
-        if (playbackCount > 0) {
-            String formattedPlaybackCount = NumberFormat.getNumberInstance(Locale.US).format(playbackCount);
-            tv.setText(String.valueOf(formattedPlaybackCount));
-        }
-    }
-    // endregion
-
     // region Inner Classes
 
     public static class TrackViewHolder extends RecyclerView.ViewHolder {
@@ -226,6 +152,84 @@ public class FavoritesAdapter extends BaseAdapter<RealmTrack> {
         public TrackViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
+        }
+        // endregion
+
+        // region Helper Methods
+        private void bind(RealmTrack track){
+            setUpArtWork(artworkImageView, track);
+            setUpUsername(usernameTextView, track);
+            setUpTitle(titleTextView, track);
+            setUpDuration(durationTextView, track);
+            setUpPlaybackCount(playbackCountTextView, track);
+        }
+
+        private void setUpArtWork(ImageView iv, RealmTrack track) {
+            String artworkUrl = track.getArtworkUrl();
+            if (!TextUtils.isEmpty(artworkUrl)) {
+//                        https://i1.sndcdn.com/avatars-000028479557-aid19w-large.jpg
+                Picasso.with(iv.getContext())
+                        .load(artworkUrl)
+                        //                .placeholder(R.drawable.ic_placeholder)
+                        //                .error(R.drawable.ic_error)
+                        .into(iv);
+            }
+        }
+
+        private void setUpUsername(TextView tv, RealmTrack track) {
+            if (track.getUser() != null) {
+                String username = track.getUser().getUsername();
+                if(!TextUtils.isEmpty(username))
+                    tv.setText(username);
+            }
+        }
+
+        private void setUpTitle(TextView tv, RealmTrack track) {
+            String title = track.getTitle();
+            if(!TextUtils.isEmpty(title))
+                tv.setText(title);
+        }
+
+        private void setUpDuration(TextView tv, RealmTrack track) {
+            long duration = track.getDuration();
+            duration /= 1000;
+
+            long minutes = duration / 60;
+            long seconds = duration % 60;
+
+            String formattedDuration;
+            if (minutes == 0L) {
+                if (seconds > 0L) {
+                    if (seconds < 10L)
+                        formattedDuration = String.format("0:0%s", String.valueOf(seconds));
+                    else
+                        formattedDuration = String.format("0:%s", String.valueOf(seconds));
+                } else {
+                    formattedDuration = "0:00";
+                }
+
+            } else {
+                if (seconds > 0L) {
+                    if (seconds < 10L)
+                        formattedDuration = String.format("%s:0%s", String.valueOf(minutes), String.valueOf(seconds));
+                    else
+                        formattedDuration = String.format("%s:%s", String.valueOf(minutes), String.valueOf(seconds));
+                } else {
+                    formattedDuration = String.format("%s:00", String.valueOf(minutes));
+                }
+            }
+
+            if(!TextUtils.isEmpty(formattedDuration))
+                tv.setText(formattedDuration);
+        }
+
+        private void setUpPlaybackCount(TextView tv, RealmTrack track) {
+            int playbackCount = track.getPlaybackCount();
+            if (playbackCount > 0) {
+                String formattedPlaybackCount = NumberFormat.getNumberInstance(Locale.US).format(playbackCount);
+                if(!TextUtils.isEmpty(formattedPlaybackCount))
+                    tv.setText(formattedPlaybackCount);
+            }
         }
         // endregion
     }

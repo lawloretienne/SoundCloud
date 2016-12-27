@@ -17,7 +17,7 @@
         android:gravity="center"
         android:drawableTop="@drawable/ic_large_track_wrapped"
         android:text="@string/no_liked_tracks"
-        android:textColor="@color/secondary_text"
+        android:textColor="@color/secondary_text_dark"
         android:textSize="20sp"
         app:textFont="maven_pro_medium" />
 

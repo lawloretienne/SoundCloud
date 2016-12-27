@@ -34,7 +34,7 @@
                 android:id="@+id/artist_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/inverse_primary_text"
+                android:textColor="@color/primary_text_light"
                 android:textSize="16sp"
                 app:textFont="maven_pro_bold"/>
 
@@ -42,7 +42,7 @@
                 android:id="@+id/title_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/inverse_secondary_text"
+                android:textColor="@color/secondary_text_light"
                 android:textSize="16sp"
                 app:textFont="maven_pro_medium"/>
         </LinearLayout>
@@ -133,7 +133,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="16dp"
-                    android:textColor="@color/inverse_primary_text"
+                    android:textColor="@color/primary_text_light"
                     app:textFont="maven_pro_medium"
                     android:textSize="16sp"
                     android:shadowDy="1"
@@ -146,7 +146,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingRight="16dp"
-                    android:textColor="@color/inverse_primary_text"
+                    android:textColor="@color/primary_text_light"
                     app:textFont="maven_pro_medium"
                     android:layout_gravity="right"
                     android:textSize="16sp"

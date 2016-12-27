@@ -22,31 +22,19 @@ public class RealmUserProfile extends RealmObject {
     //region Getters
 
     public String getUsername() {
-        if (TextUtils.isEmpty(username))
-            return "";
-        else
-            return username;
+        return username;
     }
 
     public String getAvatarUrl() {
-        if (TextUtils.isEmpty(avatarUrl))
-            return "";
-        else
-            return avatarUrl;
+        return avatarUrl;
     }
 
     public String getCountry() {
-        if (TextUtils.isEmpty(country))
-            return "";
-        else
-            return country;
+        return country;
     }
 
     public String getCity() {
-        if (TextUtils.isEmpty(city))
-            return "";
-        else
-            return city;
+        return city;
     }
 
     public int getTrackCount() {
