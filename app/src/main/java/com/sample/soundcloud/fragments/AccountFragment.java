@@ -43,9 +43,10 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
@@ -98,35 +99,36 @@ public class AccountFragment extends Fragment implements // region Interfaces
     // endregion
 
     // region Views
-    @Bind(R.id.avatar_iv)
+    @BindView(R.id.avatar_iv)
     CircleImageView avatarImageView;
-    @Bind(R.id.username_tv)
+    @BindView(R.id.username_tv)
     TextView usernameTextView;
-    @Bind(R.id.location_tv)
+    @BindView(R.id.location_tv)
     TextView locationTextView;
-    @Bind(R.id.followers_count_tv)
+    @BindView(R.id.followers_count_tv)
     TextView followersCountTextView;
-    @Bind(R.id.track_count_tv)
+    @BindView(R.id.track_count_tv)
     TextView trackCountTextView;
-    @Bind(R.id.playlist_count_tv)
+    @BindView(R.id.playlist_count_tv)
     TextView playlistCountTextView;
-    @Bind(R.id.rv)
+    @BindView(R.id.rv)
     RecyclerView recyclerView;
-    @Bind(android.R.id.empty)
+    @BindView(android.R.id.empty)
     LinearLayout emptyLinearLayout;
-    @Bind(R.id.account_ll)
+    @BindView(R.id.account_ll)
     LinearLayout accountLinearLayout;
-    @Bind(R.id.pb)
+    @BindView(R.id.pb)
     ProgressBar progressBar;
-    @Bind(R.id.error_ll)
+    @BindView(R.id.error_ll)
     LinearLayout errorLinearLayout;
-    @Bind(R.id.error_tv)
+    @BindView(R.id.error_tv)
     TextView errorTextView;
     // endregion
 
     // region Member Variables
     private FavoritesAdapter favoritesAdapter;
     private Realm realm;
+    private Unbinder unbinder;
     private SoundCloudService soundCloudService;
     private CompositeSubscription compositeSubscription;
     // endregion
@@ -230,7 +232,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_account, container, false);
-        ButterKnife.bind(this, rootView);
+        unbinder = ButterKnife.bind(this, rootView);
 
         return rootView;
     }
@@ -278,7 +280,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     @Override

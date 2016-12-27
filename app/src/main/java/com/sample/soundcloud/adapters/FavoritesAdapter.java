@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
@@ -136,15 +136,15 @@ public class FavoritesAdapter extends BaseAdapter<RealmTrack> {
 
     public static class TrackViewHolder extends RecyclerView.ViewHolder {
         // region Views
-        @Bind(R.id.artwork_iv)
+        @BindView(R.id.artwork_iv)
         ImageView artworkImageView;
-        @Bind(R.id.username_tv)
+        @BindView(R.id.username_tv)
         TextView usernameTextView;
-        @Bind(R.id.title_tv)
+        @BindView(R.id.title_tv)
         TextView titleTextView;
-        @Bind(R.id.duration_tv)
+        @BindView(R.id.duration_tv)
         TextView durationTextView;
-        @Bind(R.id.playback_count_tv)
+        @BindView(R.id.playback_count_tv)
         TextView playbackCountTextView;
         // endregion
 
@@ -236,13 +236,13 @@ public class FavoritesAdapter extends BaseAdapter<RealmTrack> {
 
     public static class FooterViewHolder extends RecyclerView.ViewHolder {
         // region Views
-        @Bind(R.id.loading_fl)
+        @BindView(R.id.loading_fl)
         FrameLayout loadingFrameLayout;
-        @Bind(R.id.error_rl)
+        @BindView(R.id.error_rl)
         RelativeLayout errorRelativeLayout;
-        @Bind(R.id.pb)
+        @BindView(R.id.pb)
         ProgressBar progressBar;
-        @Bind(R.id.reload_btn)
+        @BindView(R.id.reload_btn)
         Button reloadButton;
         // endregion
 

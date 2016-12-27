@@ -12,13 +12,13 @@ import com.sample.soundcloud.fragments.AccountFragment;
 import com.sample.soundcloud.utilities.FontCache;
 import com.sample.soundcloud.utilities.TrestleUtility;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
     // region Views
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
     // endregion
 

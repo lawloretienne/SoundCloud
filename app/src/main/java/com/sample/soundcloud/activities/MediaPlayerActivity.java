@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Headers;
@@ -55,29 +55,29 @@ import timber.log.Timber;
 public class MediaPlayerActivity extends AppCompatActivity {
 
     // region Views
-    @Bind(R.id.pause)
+    @BindView(R.id.pause)
     ImageButton pauseImageButton;
-    @Bind(R.id.play)
+    @BindView(R.id.play)
     ImageButton playImageButton;
-    @Bind(R.id.artist_tv)
+    @BindView(R.id.artist_tv)
     TextView artistTextView;
-    @Bind(R.id.title_tv)
+    @BindView(R.id.title_tv)
     TextView titleTextView;
-    @Bind(R.id.cover_image_iv)
+    @BindView(R.id.cover_image_iv)
     ImageView coverImageImageView;
-    @Bind(R.id.sb)
+    @BindView(R.id.sb)
     SeekBar seekBar;
-    @Bind(R.id.total_time_tv)
+    @BindView(R.id.total_time_tv)
     TextView totalTimeTextView;
-    @Bind(R.id.current_time_tv)
+    @BindView(R.id.current_time_tv)
     TextView currentTimeTextView;
-    @Bind(R.id.media_fl)
+    @BindView(R.id.media_fl)
     FrameLayout mediaFrameLayout;
-    @Bind(R.id.pb)
+    @BindView(R.id.pb)
     ProgressBar progressBar;
-    @Bind(R.id.error_ll)
+    @BindView(R.id.error_ll)
     LinearLayout errorLinearLayout;
-    @Bind(R.id.error_tv)
+    @BindView(R.id.error_tv)
     TextView errorTextView;
     // endregion
 
