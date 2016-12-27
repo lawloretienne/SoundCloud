@@ -54,10 +54,12 @@ import io.realm.exceptions.RealmMigrationNeededException;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 
@@ -126,6 +128,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
     private FavoritesAdapter favoritesAdapter;
     private Realm realm;
     private SoundCloudService soundCloudService;
+    private CompositeSubscription compositeSubscription;
     // endregion
 
     // region Listeners
@@ -192,6 +195,8 @@ public class AccountFragment extends Fragment implements // region Interfaces
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        compositeSubscription = new CompositeSubscription();
 
         Context context = SoundcloudApplication.getInstance().getApplicationContext();
         try {
@@ -280,6 +285,8 @@ public class AccountFragment extends Fragment implements // region Interfaces
     public void onDestroy() {
         super.onDestroy();
 
+        compositeSubscription.unsubscribe();
+
         realm.removeChangeListener(accountChangedListener);
         realm.close();
 
@@ -331,7 +338,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
         } else {
             // Account is not cached
 
-            Observable.combineLatest(
+            Subscription subscription = Observable.combineLatest(
                     soundCloudService.getUserProfile(USERNAME),
                     soundCloudService.getFavoriteTracks(USERNAME),
                     new Func2<UserProfile, List<Track>, Account>() {
@@ -367,6 +374,8 @@ public class AccountFragment extends Fragment implements // region Interfaces
                             }
                         }
                     });
+            compositeSubscription.add(subscription);
+
         }
 
     }

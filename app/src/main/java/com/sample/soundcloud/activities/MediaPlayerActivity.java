@@ -33,6 +33,7 @@ import com.sample.soundcloud.network.SoundCloudService;
 import com.sample.soundcloud.network.interceptors.AuthorizedNetworkInterceptor;
 import com.sample.soundcloud.utilities.FontCache;
 import com.sample.soundcloud.utilities.NetworkLogUtility;
+import com.sample.soundcloud.utilities.NetworkUtility;
 import com.sample.soundcloud.utilities.TrestleUtility;
 import com.squareup.picasso.Picasso;
 
@@ -267,10 +268,10 @@ public class MediaPlayerActivity extends AppCompatActivity {
 
             progressBar.setVisibility(View.GONE);
 
-//            if(NetworkUtility.isKnownException(t)){
-//                errorTextView.setText("Can't load data.\nCheck your network connection.");
-//                errorLinearLayout.setVisibility(View.VISIBLE);
-//            }
+            if(NetworkUtility.isKnownException(t)){
+                errorTextView.setText("Can't load data.\nCheck your network connection.");
+                errorLinearLayout.setVisibility(View.VISIBLE);
+            }
         }
     };
     // endregion
