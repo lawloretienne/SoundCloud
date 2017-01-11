@@ -128,6 +128,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
     // region Member Variables
     private FavoritesAdapter favoritesAdapter;
     private Realm realm;
+    private RealmChangeListener realmListener;
     private Unbinder unbinder;
     private SoundCloudService soundCloudService;
     private CompositeSubscription compositeSubscription;
@@ -145,8 +146,8 @@ public class AccountFragment extends Fragment implements // region Interfaces
 
     private RealmChangeListener accountChangedListener = new RealmChangeListener() {
         @Override
-        public void onChange() {
-            Timber.d("Soundcloud : mAccountChangedListener : onChange()");
+        public void onChange(Object element) {
+            Timber.d("Soundcloud : accountChangedListener : onChange()");
 
             errorLinearLayout.setVisibility(View.GONE);
 
@@ -200,14 +201,7 @@ public class AccountFragment extends Fragment implements // region Interfaces
 
         compositeSubscription = new CompositeSubscription();
 
-        Context context = SoundcloudApplication.getInstance().getApplicationContext();
-        try {
-            realm = Realm.getInstance(context);
-        } catch (RealmMigrationNeededException e) {
-            Realm.deleteRealm(RealmUtility.getRealmConfiguration(context));
-            realm = Realm.getInstance(context);
-        }
-
+        realm = Realm.getDefaultInstance();
         realm.addChangeListener(accountChangedListener);
 
         soundCloudService = ServiceGenerator.createService(

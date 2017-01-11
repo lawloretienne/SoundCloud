@@ -88,18 +88,13 @@ public class AccountSyncAdapter extends AbstractThreadedSyncAdapter {
 
         Log.d("Soundcloud", "Soundcloud : onPerformSync() called with: account = [" + account + "], bundle = [" + bundle + "], s = [" + s + "], contentProviderClient = [" + contentProviderClient + "], syncResult = [" + syncResult + "]");
 
-        Context context = SoundcloudApplication.getInstance().getApplicationContext();
-        Realm realm;
-        try{
-            realm = Realm.getInstance(context);
-        } catch (RealmMigrationNeededException e) {
-            Realm.deleteRealm(RealmUtility.getRealmConfiguration(context));
-            realm = Realm.getInstance(context);
+        Realm realm = Realm.getDefaultInstance();
+        try {
+            // Redownload account info
+            loadAccount();
+        } finally {
+            realm.close();
         }
-
-        // Redownload account info
-        loadAccount();
-        realm.close();
     }
 
     // region Helper Methods

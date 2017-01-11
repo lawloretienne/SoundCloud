@@ -45,12 +45,12 @@ public class RealmTrack extends RealmObject {
     }
 
     public String getArtworkUrl() {
+        String formattedArtworkUrl =  "";
         if(!TextUtils.isEmpty(artworkUrl)){
-            artworkUrl = artworkUrl.replace("large.jpg", "t500x500.jpg");
-            return artworkUrl;
-        } else {
-            return "";
+            formattedArtworkUrl = artworkUrl;
+            formattedArtworkUrl = formattedArtworkUrl.replace("large.jpg", "t500x500.jpg");
         }
+        return formattedArtworkUrl;
     }
 
     public String getStreamUrl() {

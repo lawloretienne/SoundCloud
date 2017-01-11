@@ -11,6 +11,8 @@ import com.squareup.leakcanary.RefWatcher;
 
 import java.io.File;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import timber.log.Timber;
 
 public class SoundcloudApplication extends Application {
@@ -32,10 +34,11 @@ public class SoundcloudApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        currentApplication = this;
+
         initializeTimber();
         initializeLeakCanary();
-
-        currentApplication = this;
+        initializeRealm();
     }
     // endregion
 
@@ -80,6 +83,15 @@ public class SoundcloudApplication extends Application {
             return;
         }
         refWatcher = LeakCanary.install(this);
+    }
+
+    private void initializeRealm(){
+        Realm.init(this);
+        RealmConfiguration config =
+                new RealmConfiguration.Builder()
+                        .deleteRealmIfMigrationNeeded()
+                        .build();
+        Realm.setDefaultConfiguration(config);
     }
     // endregion
 
