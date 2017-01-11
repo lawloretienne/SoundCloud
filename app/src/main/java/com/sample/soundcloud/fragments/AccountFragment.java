@@ -77,8 +77,8 @@ public class AccountFragment extends Fragment implements // region Interfaces
 
     //    public static final String USERNAME = "hardwell";
 //    public static final String USERNAME = "eric-oetting";
-//    public static final String USERNAME = "kaskade";
-    public static final String USERNAME = "lawlorslaw";
+    public static final String USERNAME = "kaskade";
+//    public static final String USERNAME = "lawlorslaw";
 //    public static final String USERNAME = "calvinharris";
 //    public static final String USERNAME = "mallywobbles";
 //    public static final String USERNAME = "dillonfrancis";
@@ -128,7 +128,6 @@ public class AccountFragment extends Fragment implements // region Interfaces
     // region Member Variables
     private FavoritesAdapter favoritesAdapter;
     private Realm realm;
-    private RealmChangeListener realmListener;
     private Unbinder unbinder;
     private SoundCloudService soundCloudService;
     private CompositeSubscription compositeSubscription;

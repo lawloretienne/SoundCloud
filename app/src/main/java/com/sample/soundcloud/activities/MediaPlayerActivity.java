@@ -195,12 +195,19 @@ public class MediaPlayerActivity extends AppCompatActivity {
 
             if (!response.isSuccessful()) {
                 int responseCode = response.code();
-                if(responseCode == 504) { // 504 Unsatisfiable Request (only-if-cached)
-                    errorTextView.setText("Can't load data.\nCheck your network connection.");
-                    errorLinearLayout.setVisibility(View.VISIBLE);
-
-                    return;
+                switch (responseCode) {
+                    case 504: // 504 Unsatisfiable Request (only-if-cached)
+                        errorTextView.setText("Can't load data.\nCheck your network connection.");
+                        errorLinearLayout.setVisibility(View.VISIBLE);
+                        break;
+                    case 429: // 429 Too Many Requests
+                        errorTextView.setText("The stream cannot be played\nnow. Please try again later.");
+                        errorLinearLayout.setVisibility(View.VISIBLE);
+                        break;
+                    default:
+                        break;
                 }
+                return;
             }
 
             if (!isFinishing()) {
