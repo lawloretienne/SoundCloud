@@ -1,4 +1,9 @@
 # SoundCloud
+
+![SoundCloud](https://raw.githubusercontent.com/lawloretienne/SoundCloud/master/images/ic_launcher.png)
+
+## Overview
+
 A SoundCloud client that pulls user profile information and refreshes when the data gets stale
 
  - Uses RxJava to chain API requests
@@ -7,7 +12,7 @@ A SoundCloud client that pulls user profile information and refreshes when the d
 
 You can also listen to any of the Liked tracks in the media player screen
 
-
+## Screenshots
 
 MainActivity           |  MediaPlayerActivity
 :-------------------------:|:-------------------------:
